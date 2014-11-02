@@ -26,25 +26,47 @@ void AreaClass::mousePressEvent(QMouseEvent *event)
 void AreaClass::mouseMoveEvent(QMouseEvent *event)
 {
     event->accept();
+    if(startPosition.x() < event->pos().x() || startPosition.y() < event->pos().y()){
+        x = startPosition.x();
+        y = startPosition.y();
+        w = event->pos().x() - x;
+        h = event->pos().y() - y;
+    }else{
+        x = event->pos().x();
+        y = event->pos().y();
+        w = startPosition.x() - x;
+        h = startPosition.y() - y;
+    }
+    this->repaint();
 }
 
 void AreaClass::mouseReleaseEvent(QMouseEvent *event)
 {
     event->accept();
     endPosition = event->pos();
-    if(startPosition.x() < endPosition.x() || startPosition.y() < endPosition.y()){
+    if(startPosition.x() < endPosition.x()){
         x = startPosition.x();
-        y = startPosition.y();
-        w = endPosition.x() - x;
-        h = endPosition.y() - y;
+        w = endPosition.x() - startPosition.x();
     }else{
         x = endPosition.x();
+        w = startPosition.x() - endPosition.x();
+    }
+
+    if(startPosition.y() < endPosition.y()){
+        y = startPosition.y();
+        h = endPosition.y() - startPosition.y();
+    }else{
         y = endPosition.y();
-        w = startPosition.x() - x;
-        h = startPosition.y() - y;
-        qDebug() << x << y << w << h;
+        h = startPosition.y() - endPosition.y();
     }
 
     emit completed(x,y,w,h);
     emit shortcut->activated();
+}
+
+void AreaClass::paintEvent(QPaintEvent *event)
+{
+    event->accept();
+    QPainter p(this);
+    p.drawRect(x, y, w, h);
 }

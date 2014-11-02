@@ -25,6 +25,8 @@ public:
     void mousePressEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
+protected:
+    void paintEvent(QPaintEvent *event);
 signals:
     void completed(int,int,int,int);
 };
