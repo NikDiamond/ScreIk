@@ -7,6 +7,8 @@
 #include <QDebug>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPixmap>
+#include <QBitmap>
 
 class AreaClass : public QWidget
 {

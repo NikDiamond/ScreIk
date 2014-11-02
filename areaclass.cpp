@@ -1,17 +1,18 @@
 #include "areaclass.h"
 
 AreaClass::AreaClass(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),x(0),y(0),w(0),h(0)
 {
     shortcut = new QShortcut(Qt::Key_Escape, this);
-    this->setWindowOpacity(0.1);
-    this->setStyleSheet("QWidget{background: #fff}");
+
+    this->setWindowFlags(windowFlags() | Qt::Tool);
+    this->setStyleSheet("background: rgba(255,255,255,225)");
+    this->setWindowOpacity(.1);
     this->setCursor(Qt::CrossCursor);
     this->showFullScreen();
 
     connect(shortcut, SIGNAL(activated()), shortcut, SLOT(deleteLater()));
     connect(shortcut, SIGNAL(activated()), this, SLOT(deleteLater()));
-
 }
 
 AreaClass::~AreaClass()
@@ -42,6 +43,7 @@ void AreaClass::mouseMoveEvent(QMouseEvent *event)
 
 void AreaClass::mouseReleaseEvent(QMouseEvent *event)
 {
+    this->setWindowOpacity(0);
     event->accept();
     endPosition = event->pos();
     if(startPosition.x() < endPosition.x()){
@@ -68,5 +70,6 @@ void AreaClass::paintEvent(QPaintEvent *event)
 {
     event->accept();
     QPainter p(this);
+    p.setBackground(QBrush(QColor(0,0,0),Qt::SolidPattern));
     p.drawRect(x, y, w, h);
 }

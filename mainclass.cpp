@@ -125,9 +125,10 @@ void MainClass::screenArea()
             this->show();
         ui->tabWidget->setCurrentIndex(1);
         this->setFocus();
+    }else{
+        areaScreener = new AreaClass();
+        connect(areaScreener, SIGNAL(completed(int,int,int,int)), this, SLOT(areaGot(int,int,int,int)));
     }
-    areaScreener = new AreaClass();
-    connect(areaScreener, SIGNAL(completed(int,int,int,int)), this, SLOT(areaGot(int,int,int,int)));
 }
 
 void MainClass::areaGot(int x, int y, int w, int h)
