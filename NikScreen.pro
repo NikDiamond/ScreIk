@@ -29,3 +29,4 @@ FORMS    += mainclass.ui
 
 RESOURCES += \
     icons.qrc
+

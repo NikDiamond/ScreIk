@@ -1,10 +1,11 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/icon.png</file>
-        <file>icons/icon20.png</file>
-        <file>icons/icon40.png</file>
-        <file>icons/icon60.png</file>
-        <file>icons/icon80.png</file>
-        <file>icons/icon100.png</file>
+        <file>sound/shelchok.wav</file>
+        <file>icons/icon.ico</file>
+        <file>icons/icon20.ico</file>
+        <file>icons/icon40.ico</file>
+        <file>icons/icon60.ico</file>
+        <file>icons/icon80.ico</file>
+        <file>icons/icon100.ico</file>
     </qresource>
 </RCC>

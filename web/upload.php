@@ -7,7 +7,7 @@ $res = mysqli_fetch_array($query);
 if(empty($res['id']))
 	die('badLogin');
 
-$uploadDir = 'uploads/';
+$uploadDir = 'l/';
 $nameHash = md5(basename($_FILES['file']['name']).time());
 $nameHash = substr($nameHash, 0, 6).substr($nameHash, strlen($nameHash)-6, 6);
 $uploadFile = $uploadDir.$nameHash.'.png';

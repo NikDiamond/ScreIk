@@ -17,7 +17,7 @@ MainClass::MainClass(QWidget *parent) :
 void MainClass::setTrayIcon()
 {
     trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setIcon(QIcon(":/icons/icon.png"));
+    trayIcon->setIcon(QIcon(":/icons/icon.ico"));
     trayIcon->show();
     QMenu *trayMenu = new QMenu(this);
     QAction *actOpen = new QAction("Открыть",trayMenu);
@@ -153,21 +153,21 @@ void MainClass::uploadProgress(qint64 bytes, qint64 total)
     if(bytes <= total && bytes > 0){
         int percent = bytes*100/total;
         if(percent <= 20)
-            setIconImage(":/icons/icon20.png");
+            setIconImage(":/icons/icon20.ico");
         else if(percent <= 40)
-            setIconImage(":/icons/icon40.png");
+            setIconImage(":/icons/icon40.ico");
         else if(percent <= 60)
-            setIconImage(":/icons/icon60.png");
+            setIconImage(":/icons/icon60.ico");
         else if(percent <= 80)
-            setIconImage(":/icons/icon80.png");
+            setIconImage(":/icons/icon80.ico");
         else if(percent <= 100)
-            setIconImage(":/icons/icon100.png");
+            setIconImage(":/icons/icon100.ico");
     }
 }
 
 void MainClass::uploadFinished()
 {
-    setIconImage(":/icons/icon.png");
+    setIconImage(":/icons/icon.ico");
     qApp->beep();
 }
 
