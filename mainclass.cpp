@@ -11,7 +11,9 @@ MainClass::MainClass(QWidget *parent) :
     ui->accountGroup->setVisible(false);
     setTrayIcon();
     startAuth();
+
     connect(ui->password, SIGNAL(returnPressed()), ui->login, SLOT(click()));
+    connect(ui->email, SIGNAL(returnPressed()), ui->login, SLOT(click()));
 }
 
 void MainClass::setTrayIcon()
@@ -51,6 +53,14 @@ void MainClass::authGui(bool enabled)
     ui->password->setEnabled(enabled);
 }
 
+void MainClass::toAuth()
+{
+    if(!this->isVisible())
+        this->show();
+    ui->tabWidget->setCurrentIndex(1);
+    this->setFocus();
+}
+
 QString MainClass::passHash(QString pass)
 {
     pass = QString(QCryptographicHash::hash(pass.toLatin1(),QCryptographicHash::Md5).toHex());
@@ -86,17 +96,17 @@ void MainClass::startAuth()
             login->tryLogin();
             connect(login, SIGNAL(gotReply(QString)), this, SLOT(authReply(QString)));
         }else{
+            toAuth();
             qDebug() << "Config open error!";
         }
+    }else{
+        toAuth();
     }
 }
 void MainClass::trayActivate(QSystemTrayIcon::ActivationReason r)
 {
     if(r==QSystemTrayIcon::Trigger){//click
-        if(this->isVisible())
-            this->hide();
-        else
-            this->show();
+        toAuth();
     }else if(r==QSystemTrayIcon::MiddleClick){//debug
         qDebug() << QApplication::topLevelWidgets();
     }
@@ -111,10 +121,7 @@ void MainClass::screen(int x, int y, int w, int h)
         connect(screener, SIGNAL(progress(qint64,qint64)), this, SLOT(uploadProgress(qint64,qint64)));
         connect(screener, SIGNAL(finished()), this, SLOT(uploadFinished()));
     }else{
-        if(!this->isVisible())
-            this->show();
-        ui->tabWidget->setCurrentIndex(1);
-        this->setFocus();
+        toAuth();
     }
 }
 
@@ -173,7 +180,7 @@ void MainClass::uploadFinished()
 
 void MainClass::on_signup_clicked()
 {
-    QDesktopServices::openUrl(QUrl("http://nikdiamond.hol.es/signup.php"));
+    QDesktopServices::openUrl(QUrl("http://nikdiamond.hol.es/account/signup.php"));
 }
 
 void MainClass::on_login_clicked()

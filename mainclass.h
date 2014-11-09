@@ -30,6 +30,7 @@ public:
     void setIconImage(QString icon);
     void createXMLFile();
     void authGui(bool enabled);
+    void toAuth();
     QString passHash(QString pass);
     void startAuth();
     ~MainClass();

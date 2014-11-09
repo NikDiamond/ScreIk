@@ -1,3 +1,11 @@
+<?
+session_start();
+$app = true;
+include('connect.php');
+include('core.class.php');
+$core = new core();
+$core->startAuth();
+?>
 <!doctype html>
 <html lang="ru-RU">
 <head>
@@ -7,12 +15,15 @@
 	<meta name="AUTHOR" content="NikDiamond, Dmitry Bardyshev">
 	
 	<link rel="stylesheet" href="css/style.css">
-	<link rel="shortcut icon" href="css/favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="css/img/icon.ico" type="image/x-icon">
+	<title>ScreIk</title>
 </head>
 <body>
 <div class="wrapper">
-	<div class="logo">
-	</div>
+	<?php
+	$incFile = $_GET['p'];
+	include($core->getPagePath($incFile));
+	?>
 </div>
 </body>
 </html>

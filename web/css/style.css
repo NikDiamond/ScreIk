@@ -1,19 +1,96 @@
 *{margin:0;padding:0;}
-html, body
+body
 {
     height: 100%;
     min-height: 100%;
+	background: #f0f0f0;
 }
 .wrapper{
-	background: #f0f0f0;
 	width: 100%;
 	height: 100%;
 }
-.logo{
-	left: calc(50% - 300px);
-	top: calc(50% - 150px);
-	width: 600px;
-	height: 300px;
+.logowrap{
+	width: 392px;
+	min-height: 137px;
 	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -63.5px;
+	margin-left: -196px;
+}
+.logo{
+	width: 392px;
+	height: 127px;
 	background: url("img/logo.png");
+}
+.links{
+	width: 392px;
+	margin: 0 auto;
+}
+.links a{
+	padding-left: 5px;
+	color: #999;
+}
+.regLinks{
+	float: right;
+}
+.accountWrap{
+	padding-top: 10px;
+	width: 600px;
+	margin: 0 auto;
+	margin-bottom: 30px;
+}
+.shadowWrap{
+	-webkit-box-shadow: 0px 5px 8px 0px rgba(50, 50, 50, 0.09);
+	-moz-box-shadow:    0px 5px 8px 0px rgba(50, 50, 50, 0.09);
+	box-shadow:         0px 5px 8px 0px rgba(50, 50, 50, 0.09);
+}
+.accountLogo{
+	width: 392px;
+	height: 127px;
+	background: url("img/logo.png");
+	margin: 0 auto;
+	margin-bottom: 10px;
+}
+.accountMenu{
+	height: 40px;
+	background: #ccc;
+	background: url("img/menuBack.png");
+}
+.left{
+	float: left;
+}
+.right{
+	float: right;
+}
+.accountMenu a{
+	display: block;
+	height: 30px;
+	min-width: 80px;
+	text-align: center;
+	padding-top: 10px;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-decoration: none;
+	color: #777;
+	float: left;
+}
+.accountMenu a:hover{
+	background: url("img/menuBackInvert.png");
+}
+.accountUploads{
+	padding: 7.5px;
+	border: 2px solid #ccc;
+	border-top: none;
+}
+.accountUploadItem{
+	width: 100px;
+	height: 100px;
+	display: inline-block;
+	margin: 8px;
+}
+.accountUploadItem img{
+	-webkit-box-shadow: 0px 0px 3px 0px rgba(50, 50, 50, 1);
+	-moz-box-shadow:    0px 0px 3px 0px rgba(50, 50, 50, 1);
+	box-shadow:         0px 0px 3px 0px rgba(50, 50, 50, 1);
 }
