@@ -17,6 +17,7 @@ $core->startAuth();
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="shortcut icon" href="css/img/icon.ico" type="image/x-icon">
 	<title>ScreIk</title>
+	<script src="js/jquery-1.11.1.min.js" type="text/javascript"></script>
 </head>
 <body>
 <div class="wrapper">

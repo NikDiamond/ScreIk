@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>250</width>
-    <height>162</height>
+    <height>161</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -478,6 +478,13 @@
              <property name="bottomMargin">
               <number>3</number>
              </property>
+             <item>
+              <widget class="QPushButton" name="toAccount">
+               <property name="text">
+                <string>Аккаунт</string>
+               </property>
+              </widget>
+             </item>
              <item>
               <widget class="QPushButton" name="logout">
                <property name="text">

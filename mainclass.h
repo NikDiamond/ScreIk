@@ -5,6 +5,7 @@
 #include "loginclass.h"
 #include "global.h"
 #include "areaclass.h"
+#include <windows.h>
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
@@ -33,6 +34,7 @@ public:
     void toAuth();
     QString passHash(QString pass);
     void startAuth();
+    bool nativeEvent(const QByteArray &eventType, void *message, long *result);
     ~MainClass();
 private slots:
     void trayActivate(QSystemTrayIcon::ActivationReason r);
@@ -45,7 +47,10 @@ private slots:
     void on_login_clicked();
     void authReply(QString rp);
     void on_logout_clicked();
+    void openAccountSite();
     void areaGot(int x, int y, int w, int h);
+
+    void on_toAccount_clicked();
 
 private:
     Ui::MainClass *ui;

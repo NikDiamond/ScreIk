@@ -14,20 +14,24 @@ if(isset($_POST['query'])){//Если запрос послан
 			if($query){
 				$res = mysqli_fetch_array($query);
 				if(empty($res['id'])){
-					$password = md5(md5($password));
-					$query = $mysqli->query("INSERT INTO `users` (`email`,`password`,`ip`) VALUES('$email', '$password', '$ip')");
-					if($query){
-						$query = $mysqli->query("SELECT * FROM `users` WHERE `email` = '$email' AND `password` = '$password'");
+					if($password == $_POST['rePassword']){
+						$password = md5(md5($password));
+						$query = $mysqli->query("INSERT INTO `users` (`email`,`password`,`ip`) VALUES('$email', '$password', '$ip')");
 						if($query){
-							$res = mysqli_fetch_array($query);
-							if(!empty($res['id'])){
-								//Записываем cookie, перенаправляем на аккаунт
-								$core->auth($res['id'], $res['email'], $res['password']);
-								header('Refresh: 0; url=/?p=account');
+							$query = $mysqli->query("SELECT * FROM `users` WHERE `email` = '$email' AND `password` = '$password'");
+							if($query){
+								$res = mysqli_fetch_array($query);
+								if(!empty($res['id'])){
+									//Записываем cookie, перенаправляем на аккаунт
+									$core->auth($res['id'], $res['email'], $res['password']);
+									header('Refresh: 0; url=/?p=account');
+								}
 							}
+						}else{
+							$core->showError('Ошибка sql.');
 						}
 					}else{
-						$core->showError('Ошибка sql.');
+						$core->showError('Пароли не совпадают.');
 					}
 				}else{
 					$core->showError('Пользователь с таким E-mail уже существует.');
@@ -43,12 +47,27 @@ if(isset($_POST['query'])){//Если запрос послан
 	}
 }else{
 ?>
-<form action="#" method="POST" name="regForm" class="regForm">
-E-Mail: <input type="text" name="email"><br>
-Password: <input type="password" name="password"><br>
-<input type="hidden" name="query">
-<input type="submit" name="submit"><br>
-</form>
+<script src="js/form-animation.js" type="text/javascript"></script>
+<div class="accountWrap">
+	<a href="/" class="accountLogo">
+	</a>
+	<div class="shadowWrap">
+		<div class="accountMenu">
+			<div class="right">
+				<a href="/?p=login">Войти в свой аккаунт</a>
+			</div>
+		</div>
+		<div class="accountUploads">
+			<form action="#" method="POST" name="regForm" class="regForm">
+				<input type="hidden" name="query">
+				<div class="formCell">E-Mail: <input type="text" name="email"></div>
+				<div class="formCell">Пароль: <input type="password" name="password"></div>
+				<div class="formCell">Повтор пароля: <input type="password" name="rePassword"></div>
+				<center><input type="submit" name="submit" value="Регистрация"></center>
+			</form>
+		</div>
+	</div>
+</div>
 <?php
 }
 $mysqli->close();

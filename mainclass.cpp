@@ -5,6 +5,9 @@ MainClass::MainClass(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainClass)
 {
+    RegisterHotKey((HWND)winId(), 0, 0, VK_SNAPSHOT);
+    RegisterHotKey((HWND)winId(), 1, MOD_ALT, VK_SNAPSHOT);
+
     ui->setupUi(this);
     this->setFixedSize(this->size());
     ui->quality->setValue(GLOBAL::quality);
@@ -22,20 +25,24 @@ void MainClass::setTrayIcon()
     trayIcon->setIcon(QIcon(":/icons/icon.ico"));
     trayIcon->show();
     QMenu *trayMenu = new QMenu(this);
-    QAction *actOpen = new QAction("Открыть",trayMenu);
+    QAction *actAcc = new QAction("Аккаунт",trayMenu);
     QAction *actScreen = new QAction("Скрин",trayMenu);
     QAction *actArea = new QAction("Скрин области",trayMenu);
+    QAction *actOpen = new QAction("Настройки",trayMenu);
     QAction *actExit = new QAction("Выход",trayMenu);
 
-    trayMenu->addAction(actOpen);
+    trayMenu->addAction(actAcc);
+    trayMenu->addSeparator();
     trayMenu->addAction(actScreen);
     trayMenu->addAction(actArea);
+    trayMenu->addAction(actOpen);
     trayMenu->addAction(actExit);
     trayIcon->setContextMenu(trayMenu);
 
-    connect(actOpen, SIGNAL(triggered()), this, SLOT(show()));
+    connect(actAcc, SIGNAL(triggered()), this, SLOT(openAccountSite()));
     connect(actScreen, SIGNAL(triggered()), this, SLOT(screen()));
     connect(actArea, SIGNAL(triggered()), this, SLOT(screenArea()));
+    connect(actOpen, SIGNAL(triggered()), this, SLOT(show()));
     connect(actExit, SIGNAL(triggered()), qApp, SLOT(quit()));
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayActivate(QSystemTrayIcon::ActivationReason)));
 }
@@ -102,6 +109,24 @@ void MainClass::startAuth()
     }else{
         toAuth();
     }
+}
+
+bool MainClass::nativeEvent(const QByteArray &eventType, void *message, long *result)
+{
+    MSG* msg = static_cast<MSG*>(message);
+    if (msg->message == WM_HOTKEY)
+    {
+        switch(msg->wParam){
+        case 0:
+            screen();
+        break;
+        case 1:
+            screenArea();
+        break;
+        }
+
+    }
+    return false;
 }
 void MainClass::trayActivate(QSystemTrayIcon::ActivationReason r)
 {
@@ -180,7 +205,7 @@ void MainClass::uploadFinished()
 
 void MainClass::on_signup_clicked()
 {
-    QDesktopServices::openUrl(QUrl("http://nikdiamond.hol.es/account/signup.php"));
+    QDesktopServices::openUrl(QUrl("http://nikdiamond.hol.es/?p=signup"));
 }
 
 void MainClass::on_login_clicked()
@@ -237,6 +262,7 @@ void MainClass::authReply(QString rp)
     }
     else{
         qDebug() << "Log In failed..." << rp;
+        toAuth();
     }
     authGui(true);
 }
@@ -252,4 +278,14 @@ void MainClass::on_logout_clicked()
     QFile configFile(QCoreApplication::applicationDirPath() + "\\auth.xml");
     configFile.remove();
     qDebug() << "Logged out!";
+}
+
+void MainClass::openAccountSite()
+{
+    QDesktopServices::openUrl(QUrl("http://nikdiamond.hol.es/?p=login&email="+_email+"&password="+_password));
+}
+
+void MainClass::on_toAccount_clicked()
+{
+    openAccountSite();
 }

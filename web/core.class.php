@@ -40,6 +40,7 @@ class core{
 	public function startAuth(){
 		if(empty($_SESSION['email']) || empty($_SESSION['password'])){
 			if(!empty($_COOKIE['email']) && !empty($_COOKIE['password'])){
+				$_SESSION['id'] = $_COOKIE['id'];
 				$_SESSION['email'] = $_COOKIE['email'];
 				$_SESSION['password'] = $_COOKIE['password'];
 				return true;

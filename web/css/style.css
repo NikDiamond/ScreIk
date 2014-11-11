@@ -5,34 +5,32 @@ body
     min-height: 100%;
 	background: #f0f0f0;
 }
+input[type=text],input[type=password]{
+	cursor: pointer;
+	border: 1px solid #aaa;
+	background: #ccc;
+	padding: 4px;
+	height: 17px;
+	border-radius: 5px;
+	opacity: 0.8;
+}
+input[type=submit]{
+	display: inline-block;
+	cursor: pointer;
+	min-width: 70px;
+	height: 30px;
+	padding: 4px;
+	background: #f0f0f0;
+	opacity: 0.6;
+	border: 2px solid #777;
+	margin-right: 10px;
+}
+input[type=submit]:hover,{
+	background: #ddd;
+}
 .wrapper{
 	width: 100%;
 	height: 100%;
-}
-.logowrap{
-	width: 392px;
-	min-height: 137px;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	margin-top: -63.5px;
-	margin-left: -196px;
-}
-.logo{
-	width: 392px;
-	height: 127px;
-	background: url("img/logo.png");
-}
-.links{
-	width: 392px;
-	margin: 0 auto;
-}
-.links a{
-	padding-left: 5px;
-	color: #999;
-}
-.regLinks{
-	float: right;
 }
 .accountWrap{
 	padding-top: 10px;
@@ -46,6 +44,7 @@ body
 	box-shadow:         0px 5px 8px 0px rgba(50, 50, 50, 0.09);
 }
 .accountLogo{
+	display: block;
 	width: 392px;
 	height: 127px;
 	background: url("img/logo.png");
@@ -69,8 +68,8 @@ body
 	min-width: 80px;
 	text-align: center;
 	padding-top: 10px;
-	padding-left: 5px;
-	padding-right: 5px;
+	padding-left: 7px;
+	padding-right: 7px;
 	text-decoration: none;
 	color: #777;
 	float: left;
@@ -93,4 +92,80 @@ body
 	-webkit-box-shadow: 0px 0px 3px 0px rgba(50, 50, 50, 1);
 	-moz-box-shadow:    0px 0px 3px 0px rgba(50, 50, 50, 1);
 	box-shadow:         0px 0px 3px 0px rgba(50, 50, 50, 1);
+}
+.download{
+	width: 150px;
+	margin: 0 auto;
+	padding-top: 20px;
+	text-align: center;
+}
+.mainPage{
+	width: 100%;
+	height: 200px;
+	background: #aaa;
+	margin-top: 200px;
+	margin-left: 0;
+	padding-top: 16.5px;
+	-webkit-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.75);
+	box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.75);
+}
+.logo{
+	width: 392px;
+	height: 127px;
+	margin: 0 auto;
+	background: url('img/logo.png') no-repeat;
+	margin-bottom: 10px;
+}
+.buttons{
+	width: 392px;
+	height: 50px;
+	margin: 0 auto;
+	overflow: visible;
+	opacity: 1;
+}
+.btn{
+	display: block;
+	width: 150px;
+	height: 50px;
+	float: left;
+	margin-left: 30px;
+	opacity: 0.8;
+	-webkit-box-shadow: 0px 2px 10px -5px rgba(0,0,0,0.75);
+	-moz-box-shadow: 0px 2px 10px -5px rgba(0,0,0,0.75);
+	box-shadow: 0px 2px 10px -5px rgba(0,0,0,0.75);
+}
+.downloadBtn{
+	background: url('img/download.png');
+}
+.accountBtn{
+	background: url('img/account.png');
+}
+.regForm{
+	width: 60%;
+	margin: 0 auto;
+	padding: 10px;
+}
+.formCell{
+	padding-top: 6px;
+	padding-bottom: 1px;
+	border-bottom: 1px dashed #999;
+	min-height: 30px;
+}
+.formCell input[type=text], .formCell input[type=password]{
+	float: right;
+}
+.regForm input[type=submit]{
+	margin-top: 6px;
+}
+#moreLink{
+	display: block;
+	padding: 5px;
+	text-align: center;
+	color: #777;
+	text-decoration: none;
+	background: #ddd;
+}
+#moreLink:hover{
+	background: #cfcfcf
 }
