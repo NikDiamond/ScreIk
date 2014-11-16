@@ -5,9 +5,6 @@ MainClass::MainClass(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainClass)
 {
-    RegisterHotKey((HWND)winId(), 0, 0, VK_SNAPSHOT);
-    RegisterHotKey((HWND)winId(), 1, MOD_ALT, VK_SNAPSHOT);
-
     ui->setupUi(this);
     this->setFixedSize(this->size());
     ui->quality->setValue(GLOBAL::quality);
@@ -17,6 +14,8 @@ MainClass::MainClass(QWidget *parent) :
 
     connect(ui->password, SIGNAL(returnPressed()), ui->login, SLOT(click()));
     connect(ui->email, SIGNAL(returnPressed()), ui->login, SLOT(click()));
+    RegisterHotKey((HWND)winId(), 0, 0, VK_SNAPSHOT);
+    RegisterHotKey((HWND)winId(), 1, MOD_ALT, VK_SNAPSHOT);
 }
 
 void MainClass::setTrayIcon()

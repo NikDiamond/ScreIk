@@ -165,7 +165,21 @@ input[type=submit]:hover,{
 	color: #777;
 	text-decoration: none;
 	background: #ddd;
+	margin-left: -7.5px;
+	margin-right: -7.5px;
+	margin-bottom: -7.5px;
 }
 #moreLink:hover{
-	background: #cfcfcf
+	color: #444;
+}
+.moreDown{
+	background: #f0f0f0 !important;
+	border-top: 2px solid #ccc !important;
+	padding-top: 4px !important;
+	padding-bottom: 4px !important;
+}
+.moreLoad{
+	background-image: url('img/loading.gif') !important;
+	background-repeat: no-repeat !important;
+	background-position: 5px 5px !important;
 }

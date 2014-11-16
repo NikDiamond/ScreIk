@@ -5,6 +5,8 @@
 	$core = new core();
 	$core->startAuth();
 	$query = $mysqli->query("SELECT * FROM `screenshots` WHERE `userId` = '".$_SESSION['id']."' AND `id` <= ".$_POST['from']." ORDER by `id` DESC");
+	if($_POST['from'] == 0)
+		$query = $mysqli->query("SELECT * FROM `screenshots` WHERE `userId` = '".$_SESSION['id']."' ORDER by `id` DESC");
 	if($query){
 		$num = mysqli_num_rows($query);
 		$showMore = false;
@@ -29,5 +31,5 @@
 	if($showMore){
 ?>
 		<br>
-		<a id="moreLink" href="javascript://" onClick="moreItems(<?=$lastItem-1?>);">More</a>
+		<a id="moreLink" onmousedown="$(this).addClass('moreDown').addClass('moreLoad');" onmouseup="$(this).removeClass('moreDown');" href="javascript://" oncontextmenu="moreItems(<?=$lastItem-1?>);return false;" onClick="moreItems(<?=$lastItem-1?>);">Ещё</a>
 	<?}?>

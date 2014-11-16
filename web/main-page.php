@@ -4,7 +4,7 @@
 <div class="mainPage" id="mainPage">
 	<div class="logo"></div>
 	<div class="buttons">
-		<a href="https://docs.google.com/uc?authuser=0&id=0BwEu8gfpVIkFaldmbUlWdDFFTGs&export=download" class="btn downloadBtn"></a>
+		<a href="https://docs.google.com/uc?authuser=0&id=0BwEu8gfpVIkFcGtraWdCak41bVk&export=download" class="btn downloadBtn"></a>
 		<a href="/?p=account" class="btn accountBtn"></a>
 	</div>
 </div>
