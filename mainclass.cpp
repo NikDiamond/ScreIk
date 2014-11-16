@@ -281,7 +281,7 @@ void MainClass::on_logout_clicked()
 
 void MainClass::openAccountSite()
 {
-    QDesktopServices::openUrl(QUrl("http://nikdiamond.hol.es/?p=login&email="+_email+"&password="+_password));
+    SiteOpen *site = new SiteOpen(_email, _password, this);
 }
 
 void MainClass::on_toAccount_clicked()

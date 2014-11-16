@@ -5,6 +5,7 @@
 #include "loginclass.h"
 #include "global.h"
 #include "areaclass.h"
+#include "siteopen.h"
 #include <windows.h>
 
 #include <QMainWindow>

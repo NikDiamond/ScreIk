@@ -15,7 +15,7 @@ void logInClass::tryLogin()
 
     QNetworkRequest req(url);
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-    req.setHeader(QNetworkRequest::UserAgentHeader, "NikScreen_1.0");
+    req.setHeader(QNetworkRequest::UserAgentHeader, "ScreeIk_1.0");
     reply = manager.post(req, request);
     connect(reply, SIGNAL(readyRead()), this, SLOT(readyRead()));
 }

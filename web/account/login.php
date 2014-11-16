@@ -1,21 +1,26 @@
 <?php
 if(!$app){header("HTTP/1.0 403 Forbidden");exit;}
-if($core->isAuth()){echo '<script type="text/javascript">location.href="/?p=account"</script>';die('Forbidden');}
+$authByKey = false;
+if(strlen($_GET['key']) == 32)
+	$authByKey = true;
+if($core->isAuth() && !$authByKey){echo '<script type="text/javascript">location.href="/?p=account"</script>';die('Forbidden');}
+$key = $_GET['key'];
 
-$hashed = false;
-if(!empty($_GET['email']) && !empty($_GET['password'])){
-	$_POST['query'] = 'true';
-	$_POST['email'] = $_GET['email'];
-	$_POST['password'] = $_GET['password'];
-	$hashed = true;
+function removeKey(){
+	$query = $mysqli->query("UPDATE `users` SET AuthKey = '' WHERE AuthKey = '$key'");
+}
+if($authByKey){
+	$query = $mysqli->query("SELECT * FROM `users` WHERE AuthKey = '$key'");
+	if(!$query){removeKey();die;}
+	$res = mysqli_fetch_array($query);
+	if(empty($res['id'])){removeKey();die;}
+	$core->auth($res['id'], $res['email'], $res['password']);
+	header('Refresh: 0; url=/?p=account');
 }
 if(isset($_POST['query'])){//Если запрос послан
 	//Обрабатываем данные
 	$email = $mysqli->real_escape_string(htmlspecialchars(trim($_POST['email'])));
-	if(!$hashed)
-		$password = md5(md5(trim($_POST['password'])));
-	else
-		$password = trim($_POST['password']);
+	$password = trim($_POST['password']);
 	
 	$query = $mysqli->query("SELECT * FROM `users` WHERE `email` = '$email' AND `password` = '$password'");
 	if($query){

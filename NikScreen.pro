@@ -18,14 +18,16 @@ SOURCES += main.cpp\
     global.cpp \
     loginclass.cpp \
     areaclass.cpp \
-    drawerclass.cpp
+    drawerclass.cpp \
+    siteopen.cpp
 
 HEADERS  += mainclass.h \
     screenclass.h \
     global.h \
     loginclass.h \
     areaclass.h \
-    drawerclass.h
+    drawerclass.h \
+    siteopen.h
 
 FORMS    += mainclass.ui
 
