@@ -1,12 +1,12 @@
 #ifndef AREACLASS_H
 #define AREACLASS_H
 
+#include "drawerclass.h"
 #include <QObject>
 #include <QWidget>
 #include <QShortcut>
 #include <QDebug>
 #include <QMouseEvent>
-#include <QPainter>
 #include <QPixmap>
 #include <QBitmap>
 
@@ -15,8 +15,10 @@ class AreaClass : public QWidget
     Q_OBJECT
 private:
     QShortcut *shortcut;
+    QShortcut *shortcutDr;
     QPoint startPosition;
     QPoint endPosition;
+    DrawerClass *drawer;
     int x;
     int y;
     int w;
@@ -27,8 +29,6 @@ public:
     void mousePressEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);
     void mouseReleaseEvent(QMouseEvent * event);
-protected:
-    void paintEvent(QPaintEvent *event);
 signals:
     void completed(int,int,int,int);
 };

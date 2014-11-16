@@ -17,13 +17,15 @@ SOURCES += main.cpp\
     screenclass.cpp \
     global.cpp \
     loginclass.cpp \
-    areaclass.cpp
+    areaclass.cpp \
+    drawerclass.cpp
 
 HEADERS  += mainclass.h \
     screenclass.h \
     global.h \
     loginclass.h \
-    areaclass.h
+    areaclass.h \
+    drawerclass.h
 
 FORMS    += mainclass.ui
 

@@ -3,16 +3,24 @@
 AreaClass::AreaClass(QWidget *parent) :
     QWidget(parent),x(0),y(0),w(0),h(0)
 {
-    shortcut = new QShortcut(Qt::Key_Escape, this);
-
     this->setWindowFlags(windowFlags() | Qt::Tool);
-    this->setStyleSheet("background: rgba(255,255,255,225)");
-    this->setWindowOpacity(.1);
+    this->setStyleSheet("background: rgb(255,255,255)");
+    this->setWindowOpacity(.01);
     this->setCursor(Qt::CrossCursor);
     this->showFullScreen();
+    this->setFixedSize(this->size());
+
+    drawer = new DrawerClass();
+    shortcut = new QShortcut(Qt::Key_Escape, this);
+    shortcutDr = new QShortcut(Qt::Key_Escape, drawer);
 
     connect(shortcut, SIGNAL(activated()), shortcut, SLOT(deleteLater()));
+    connect(shortcut, SIGNAL(activated()), drawer, SLOT(deleteLater()));
     connect(shortcut, SIGNAL(activated()), this, SLOT(deleteLater()));
+
+    connect(shortcutDr, SIGNAL(activated()), shortcut, SLOT(deleteLater()));
+    connect(shortcutDr, SIGNAL(activated()), drawer, SLOT(deleteLater()));
+    connect(shortcutDr, SIGNAL(activated()), this, SLOT(deleteLater()));
 }
 
 AreaClass::~AreaClass()
@@ -27,18 +35,24 @@ void AreaClass::mousePressEvent(QMouseEvent *event)
 void AreaClass::mouseMoveEvent(QMouseEvent *event)
 {
     event->accept();
-    if(startPosition.x() < event->pos().x() || startPosition.y() < event->pos().y()){
+    if(startPosition.x() < event->pos().x()){
         x = startPosition.x();
-        y = startPosition.y();
-        w = event->pos().x() - x;
-        h = event->pos().y() - y;
+        w = event->pos().x() - startPosition.x();
     }else{
         x = event->pos().x();
-        y = event->pos().y();
-        w = startPosition.x() - x;
-        h = startPosition.y() - y;
+        w = startPosition.x() - event->pos().x();
     }
-    this->repaint();
+
+    if(startPosition.y() < event->pos().y()){
+        y = startPosition.y();
+        h = event->pos().y() - startPosition.y();
+    }else{
+        y = event->pos().y();
+        h = startPosition.y() - event->pos().y();
+    }
+    drawer->setGeometry(x,y,w,h);
+    drawer->show();
+    drawer->repaint();
 }
 
 void AreaClass::mouseReleaseEvent(QMouseEvent *event)
@@ -62,14 +76,7 @@ void AreaClass::mouseReleaseEvent(QMouseEvent *event)
         h = startPosition.y() - endPosition.y();
     }
 
+    drawer->setWindowOpacity(.001);
     emit completed(x,y,w,h);
     emit shortcut->activated();
-}
-
-void AreaClass::paintEvent(QPaintEvent *event)
-{
-    event->accept();
-    QPainter p(this);
-    p.setBackground(QBrush(QColor(0,0,0),Qt::SolidPattern));
-    p.drawRect(x, y, w, h);
 }
