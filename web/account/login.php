@@ -6,14 +6,16 @@ if(strlen($_GET['key']) == 32)
 if($core->isAuth() && !$authByKey){echo '<script type="text/javascript">location.href="/?p=account"</script>';die('Forbidden');}
 $key = $_GET['key'];
 
-function removeKey(){
-	$query = $mysqli->query("UPDATE `users` SET AuthKey = '' WHERE AuthKey = '$key'");
+function removeKey($k,&$mysqli){
+	$query = $mysqli->query("UPDATE `users` SET AuthKey = '' WHERE AuthKey = '$k'");
 }
 if($authByKey){
 	$query = $mysqli->query("SELECT * FROM `users` WHERE AuthKey = '$key'");
-	if(!$query){removeKey();die;}
+	removeKey($key, $mysqli);
+	
+	if(!$query)die;
 	$res = mysqli_fetch_array($query);
-	if(empty($res['id'])){removeKey();die;}
+	if(empty($res['id']))die;
 	$core->auth($res['id'], $res['email'], $res['password']);
 	header('Refresh: 0; url=/?p=account');
 }

@@ -10,7 +10,7 @@ logInClass::~logInClass()
 
 void logInClass::tryLogin()
 {
-    QUrl url("http://nikdiamond.hol.es/login.php");
+    QUrl url("http://"+GLOBAL::domain+"/login.php");
     QByteArray request(QString("email=" + email + "&password=" + pass).toLocal8Bit());
 
     QNetworkRequest req(url);

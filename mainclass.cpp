@@ -25,8 +25,8 @@ void MainClass::setTrayIcon()
     trayIcon->show();
     QMenu *trayMenu = new QMenu(this);
     QAction *actAcc = new QAction("Аккаунт",trayMenu);
-    QAction *actScreen = new QAction("Скрин",trayMenu);
-    QAction *actArea = new QAction("Скрин области",trayMenu);
+    QAction *actScreen = new QAction("Скрин [Prt Scr]",trayMenu);
+    QAction *actArea = new QAction("Скрин области [Alt + Prt Scr]",trayMenu);
     QAction *actOpen = new QAction("Настройки",trayMenu);
     QAction *actExit = new QAction("Выход",trayMenu);
 
@@ -204,7 +204,7 @@ void MainClass::uploadFinished()
 
 void MainClass::on_signup_clicked()
 {
-    QDesktopServices::openUrl(QUrl("http://nikdiamond.hol.es/?p=signup"));
+    QDesktopServices::openUrl(QUrl("http://"+GLOBAL::domain+"/?p=signup"));
 }
 
 void MainClass::on_login_clicked()
@@ -282,6 +282,7 @@ void MainClass::on_logout_clicked()
 void MainClass::openAccountSite()
 {
     SiteOpen *site = new SiteOpen(_email, _password, this);
+    site->use();
 }
 
 void MainClass::on_toAccount_clicked()

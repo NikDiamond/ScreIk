@@ -16,7 +16,7 @@ void ScreenClass::doScreen(QString email, QString pass, int x, int y, int w, int
         pixmap.save(fileName, "PNG", GLOBAL::quality);
 
         //POSTING FORM DATA
-        QUrl url("http://nikdiamond.hol.es/upload.php?email="+email+"&passHash="+pass);
+        QUrl url("http://"+GLOBAL::domain+"/upload.php?email="+email+"&passHash="+pass);
         QString bound="margin";
         QByteArray data(QString("--" + bound + "\r\n").toLatin1());
         data.append("Content-Disposition: form-data; name=\"action\"\r\n\r\n");

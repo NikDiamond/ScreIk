@@ -14,6 +14,14 @@ SiteOpen::SiteOpen(QString email, QString password, QObject *parent) :
     connect(reply, SIGNAL(readyRead()), this, SLOT(keyGot()));
 }
 
+SiteOpen::~SiteOpen()
+{
+    delete reply;
+}
+
+void SiteOpen::use()
+{}
+
 void SiteOpen::keyGot()
 {
     QString rp = reply->readAll();
@@ -21,4 +29,5 @@ void SiteOpen::keyGot()
     if(rp != "auth-error"){
         QDesktopServices::openUrl(QUrl("http://"+GLOBAL::domain+"/?p=login&key="+rp));
     }
+    this->deleteLater();
 }

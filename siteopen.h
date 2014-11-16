@@ -17,6 +17,8 @@ class SiteOpen : public QObject
     Q_OBJECT
 public:
     explicit SiteOpen(QString email, QString password, QObject *parent = 0);
+    ~SiteOpen();
+    void use();
 private:
     QNetworkAccessManager manager;
     QNetworkReply *reply;

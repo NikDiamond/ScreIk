@@ -1,6 +1,7 @@
 #ifndef LOGINCLASS_H
 #define LOGINCLASS_H
 
+#include "global.h"
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
