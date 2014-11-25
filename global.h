@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QString>
+#include <windows.h>
 
 class GLOBAL : public QObject
 {
@@ -12,6 +13,7 @@ public:
     static int quality;
     static bool authorized;
     static QString domain;
+    static HWND mainId;
 };
 
 #endif // GLOBAL_H

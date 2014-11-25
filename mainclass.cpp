@@ -1,10 +1,12 @@
 #include "mainclass.h"
 #include "ui_mainclass.h"
 
+
 MainClass::MainClass(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainClass)
 {
+    prtProtect = false;
     ui->setupUi(this);
     this->setFixedSize(this->size());
     ui->quality->setValue(GLOBAL::quality);
@@ -12,10 +14,38 @@ MainClass::MainClass(QWidget *parent) :
     setTrayIcon();
     startAuth();
 
+    RegisterHotKey((HWND)winId(), 0, 0, VK_SNAPSHOT);
+
+    hooker = HookKeyboard::instance();
+    hooker->startHook();
+
+    connect(hooker, SIGNAL(keyPress(HookKeyboard::HookKey)), this, SLOT(emitPress(HookKeyboard::HookKey)));
+
     connect(ui->password, SIGNAL(returnPressed()), ui->login, SLOT(click()));
     connect(ui->email, SIGNAL(returnPressed()), ui->login, SLOT(click()));
-    RegisterHotKey((HWND)winId(), 0, 0, VK_SNAPSHOT);
-    RegisterHotKey((HWND)winId(), 1, MOD_ALT, VK_SNAPSHOT);
+
+    GLOBAL::mainId = (HWND)winId();
+    ui->keyhook_full->setTarget(0);
+    ui->keyhook_area->setTarget(1);
+}
+
+
+void MainClass::emitPress(HookKeyboard::HookKey key)
+{
+    if(QApplication::focusWidget() != NULL){
+        QKeyEvent *emitEvent = new QKeyEvent(QEvent::KeyPress, Qt::Key_Print, Qt::NoModifier, 0, VK_SNAPSHOT, 0, "Prt Screen");
+        QKeyEvent *emitEventRelease = new QKeyEvent(QEvent::KeyRelease, Qt::Key_Print, Qt::NoModifier, 0, VK_SNAPSHOT, 0, "Prt Screen");
+        QCoreApplication::postEvent(QApplication::focusWidget(), emitEvent);
+        QCoreApplication::postEvent(QApplication::focusWidget(), emitEventRelease);
+    }
+    hooker->endHook();
+    keybd_event(VK_SNAPSHOT, MapVirtualKeyA(VK_SNAPSHOT, 0),0,0);
+    hooker->startHook();
+}
+
+void MainClass::keyPressEvent(QKeyEvent *event)
+{
+
 }
 
 void MainClass::setTrayIcon()
@@ -123,7 +153,6 @@ bool MainClass::nativeEvent(const QByteArray &eventType, void *message, long *re
             screenArea();
         break;
         }
-
     }
     return false;
 }

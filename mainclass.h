@@ -6,7 +6,8 @@
 #include "global.h"
 #include "areaclass.h"
 #include "siteopen.h"
-#include <windows.h>
+#include "keyhooker.h"
+#include "hookkeyboard.h"
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
@@ -28,6 +29,7 @@ class MainClass : public QMainWindow
 
 public:
     explicit MainClass(QWidget *parent = 0);
+    ~MainClass();
     void setTrayIcon();
     void setIconImage(QString icon);
     void createXMLFile();
@@ -35,8 +37,9 @@ public:
     void toAuth();
     QString passHash(QString pass);
     void startAuth();
+protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result);
-    ~MainClass();
+    void keyPressEvent(QKeyEvent *event);
 private slots:
     void trayActivate(QSystemTrayIcon::ActivationReason r);
     void screen(int x = 0, int y = 0, int w = -1, int h = -1);
@@ -50,15 +53,16 @@ private slots:
     void on_logout_clicked();
     void openAccountSite();
     void areaGot(int x, int y, int w, int h);
-
     void on_toAccount_clicked();
-
+    void emitPress(HookKeyboard::HookKey key);
 private:
     Ui::MainClass *ui;
     QSystemTrayIcon *trayIcon;
     AreaClass *areaScreener;
     QString _email;
     QString _password;
+    HookKeyboard *hooker;
+    bool prtProtect;
 };
 
 #endif // MAINCLASS_H

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui network concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -19,7 +19,9 @@ SOURCES += main.cpp\
     loginclass.cpp \
     areaclass.cpp \
     drawerclass.cpp \
-    siteopen.cpp
+    siteopen.cpp \
+    keyhooker.cpp \
+    hookkeyboard.cpp
 
 HEADERS  += mainclass.h \
     screenclass.h \
@@ -27,7 +29,9 @@ HEADERS  += mainclass.h \
     loginclass.h \
     areaclass.h \
     drawerclass.h \
-    siteopen.h
+    siteopen.h \
+    keyhooker.h \
+    hookkeyboard.h
 
 FORMS    += mainclass.ui
 

@@ -1,4 +1,5 @@
 #include "mainclass.h"
+#include <windows.h>
 #include <QApplication>
 
 int main(int argc, char *argv[])

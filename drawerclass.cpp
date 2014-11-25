@@ -17,5 +17,4 @@ void DrawerClass::paintEvent(QPaintEvent *event)
     p.setPen(pen);
     p.setBackground(QBrush(QColor(0,0,0),Qt::SolidPattern));
     p.drawRect(1, 1, this->width()-2, this->height()-2);
-    qDebug() << this->x() << " " << this->y() << " " << this->width() << " " << this->height();
 }

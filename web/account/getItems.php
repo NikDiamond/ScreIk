@@ -15,7 +15,7 @@
 		for($i=1;$i<=$num;$i++){
 			$res = mysqli_fetch_array($query);
 			$path = 'l/m/'.$res['name'];
-			echo '<a href="l/'.$res['name'].'" class="accountUploadItem" id="'.$res['id'].'">';
+			echo '<a target="_blank" href="l/'.$res['name'].'" class="accountUploadItem" id="'.$res['id'].'">';
 			if(file_exists('../'.$path)){
 				echo '<img src="'.$path.'">';
 			}else{
