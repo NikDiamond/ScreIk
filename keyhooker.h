@@ -9,6 +9,7 @@
 #include <QDebug>
 #include <QKeyEvent>
 #include <QString>
+#include <QSettings>
 #include <QKeySequence>
 #include <windows.h>
 
@@ -18,6 +19,7 @@ class KeyHooker : public QPushButton
 public:
     explicit KeyHooker(QWidget *parent = 0);
     void setTarget(int id);
+    QString keyName(int hotkeyId);
 protected:
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
@@ -26,6 +28,7 @@ private:
     bool shiftFlag;
     bool ctrlFlag;
     bool altFlag;
+    bool keyPressed;
     UINT mods;
     QString modText;
     QString keyText;

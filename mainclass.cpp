@@ -6,16 +6,14 @@ MainClass::MainClass(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainClass)
 {
-    prtProtect = false;
     ui->setupUi(this);
+    startSettings();
+
     this->setFixedSize(this->size());
     ui->quality->setValue(GLOBAL::quality);
     ui->accountGroup->setVisible(false);
     setTrayIcon();
     startAuth();
-
-    RegisterHotKey((HWND)winId(), 0, 0, VK_SNAPSHOT);
-
     hooker = HookKeyboard::instance();
     hooker->startHook();
 
@@ -55,8 +53,8 @@ void MainClass::setTrayIcon()
     trayIcon->show();
     QMenu *trayMenu = new QMenu(this);
     QAction *actAcc = new QAction("Аккаунт",trayMenu);
-    QAction *actScreen = new QAction("Скрин [Prt Scr]",trayMenu);
-    QAction *actArea = new QAction("Скрин области [Alt + Prt Scr]",trayMenu);
+    QAction *actScreen = new QAction("Скрин",trayMenu);
+    QAction *actArea = new QAction("Скрин области",trayMenu);
     QAction *actOpen = new QAction("Настройки",trayMenu);
     QAction *actExit = new QAction("Выход",trayMenu);
 
@@ -105,36 +103,14 @@ QString MainClass::passHash(QString pass)
 }
 void MainClass::startAuth()
 {
-    QFile configFile(QCoreApplication::applicationDirPath() + "\\auth.xml");
-    if(configFile.exists()){
-        if(configFile.open(QIODevice::ReadOnly)){
-            QXmlStreamReader xmlReader;
-            xmlReader.setDevice(&configFile);
+    QSettings settings;
 
-            QString email;
-            QString password;
-            xmlReader.readNext();
-            while(!xmlReader.isEndDocument()){
-                if(xmlReader.isStartElement()){
-                    if(xmlReader.name() == "email"){
-                        email = xmlReader.readElementText();
-                        _email = email;
-                    }
-                    if(xmlReader.name() == "password"){
-                        password = xmlReader.readElementText();
-                        _password = password;
-                        break;
-                    }
-                }
-                xmlReader.readNext();
-            }
-            logInClass *login = new logInClass(email, password, this);
-            login->tryLogin();
-            connect(login, SIGNAL(gotReply(QString)), this, SLOT(authReply(QString)));
-        }else{
-            toAuth();
-            qDebug() << "Config open error!";
-        }
+    if(settings.value("auth/email", 0) != 0 && settings.value("auth/password", 0) != 0){
+        _email = settings.value("auth/email").toString();
+        _password = settings.value("auth/password").toString();
+        logInClass *login = new logInClass(_email, _password, this);
+        login->tryLogin();
+        connect(login, SIGNAL(gotReply(QString)), this, SLOT(authReply(QString)));
     }else{
         toAuth();
     }
@@ -203,9 +179,38 @@ MainClass::~MainClass()
     delete trayIcon;
 }
 
+QString MainClass::modString(int modId)
+{
+    switch(modId){
+    case MOD_ALT:
+        return "Alt + ";
+    case MOD_CONTROL:
+        return "Ctrl + ";
+    case MOD_SHIFT:
+        return "Shift + ";
+    default:
+        return "";
+    }
+}
+
+void MainClass::startSettings()
+{
+    QSettings settings;
+    GLOBAL::quality = settings.value("general/quality", 60).toInt();
+    //hotkeys
+    RegisterHotKey((HWND)winId(), 0, settings.value("hotkeys/fullscreen_mod", 0).toUInt(), settings.value("hotkeys/fullscreen_key", VK_SNAPSHOT).toUInt());//full
+    ui->keyhook_full->setText(modString(settings.value("hotkeys/fullscreen_mod", 0).toUInt()) + settings.value("hotkeys/fullscreen_text", "NULL").toString());
+
+    RegisterHotKey((HWND)winId(), 1, settings.value("hotkeys/areascreen_mod", MOD_ALT).toUInt(), settings.value("hotkeys/areascreen_key", VK_SNAPSHOT).toUInt());//area
+    ui->keyhook_area->setText(modString(settings.value("hotkeys/areascreen_mod", MOD_ALT).toUInt()) + settings.value("hotkeys/areascreen_text", "NULL").toString());
+}
+
 void MainClass::on_quality_valueChanged(int value)
 {
     GLOBAL::quality = value;
+    QSettings settings;
+    settings.setValue("general/quality", value);
+    settings.sync();
 }
 
 void MainClass::uploadProgress(qint64 bytes, qint64 total)
@@ -268,23 +273,10 @@ void MainClass::authReply(QString rp)
         if(ui->remember->isChecked()){
             _email = ui->email->text();
             _password = passHash(ui->password->text());
-            QFile configFile(QCoreApplication::applicationDirPath() + "\\auth.xml");
-            qDebug() << "AuthFile created: " << configFile.fileName();
-            if(configFile.open(QIODevice::WriteOnly)){
-                QXmlStreamWriter *xmlWriter = new QXmlStreamWriter(&configFile);
-                xmlWriter->writeStartDocument();
-                    xmlWriter->writeStartElement("auth");
-                        xmlWriter->writeStartElement("email");
-                            xmlWriter->writeCharacters(_email);
-                        xmlWriter->writeEndElement();
-                        xmlWriter->writeStartElement("password");
-                            xmlWriter->writeCharacters(_password);
-                        xmlWriter->writeEndElement();
-                    xmlWriter->writeEndElement();
-                xmlWriter->writeEndDocument();
-            }else{
-                qDebug() << "Config file error!";
-            }
+            QSettings settings;
+            settings.setValue("auth/email", _email);
+            settings.setValue("auth/password", _password);
+            settings.sync();
         }
         ui->accountEmail->setText(_email);
     }
@@ -303,8 +295,8 @@ void MainClass::on_logout_clicked()
     ui->accountGroup->setVisible(false);
     ui->authGroup->setVisible(true);
     ui->accountEmail->clear();
-    QFile configFile(QCoreApplication::applicationDirPath() + "\\auth.xml");
-    configFile.remove();
+    QSettings settings;
+    settings.remove("auth");
     qDebug() << "Logged out!";
 }
 

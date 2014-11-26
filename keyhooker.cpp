@@ -11,11 +11,26 @@ KeyHooker::KeyHooker(QWidget *parent) :
     shiftFlag = false;
     ctrlFlag = false;
     altFlag = false;
+    keyPressed = false;
 }
 
 void KeyHooker::setTarget(int id)
 {
     this->keyId = id;
+}
+
+QString KeyHooker::keyName(int hotkeyId)
+{
+    switch(hotkeyId){
+    case 0:
+        return "fullscreen";
+        break;
+    case 1:
+        return "areascreen";
+        break;
+    default:
+        return "";
+    }
 }
 
 void KeyHooker::keyPressEvent(QKeyEvent *event)
@@ -44,6 +59,7 @@ void KeyHooker::keyPressEvent(QKeyEvent *event)
         break;
     default:
         keyText = QKeySequence(key).toString();
+        keyPressed = true;
         break;
     }
     this->setText(modText + keyText);
@@ -51,43 +67,48 @@ void KeyHooker::keyPressEvent(QKeyEvent *event)
 
 void KeyHooker::keyReleaseEvent(QKeyEvent *event)
 {
-    qDebug() << "release " << event->modifiers();
     int key = event->key();
     switch(key){
     case KEY_SHIFT:
         shiftFlag = false;
         mods = 0;
-        qDebug() << "sr";
         break;
     case KEY_CTRL:
         ctrlFlag = false;
         mods = 0;
-        qDebug() << "cr";
         break;
     case KEY_ALT:
         altFlag = false;
         mods = 0;
-        qDebug() << "ar";
         break;
     default:
+        RegisterHotKey(GLOBAL::mainId, this->keyId, mods, event->nativeVirtualKey());
+        qDebug() << mods;
+        QSettings settings;
+        settings.setValue("hotkeys/"+keyName(this->keyId)+"_mod", mods);
+        settings.setValue("hotkeys/"+keyName(this->keyId)+"_key", event->nativeVirtualKey());
+        settings.setValue("hotkeys/"+keyName(this->keyId)+"_text", keyText);
+        settings.sync();
+
+        keyPressed = false;
         if(!shiftFlag && !ctrlFlag && !altFlag){
             this->setText(QKeySequence(key).toString());
             mods = 0;
-            this->clearFocus();
         }
-        bool is = RegisterHotKey(GLOBAL::mainId, this->keyId, mods, event->nativeVirtualKey());
-        qDebug() << is << " -reg " << mods << " " << event->nativeVirtualKey();
         if(mods == 0)
             modText = "";
         break;
     }
-    if(!shiftFlag && !ctrlFlag && !altFlag){
+    if(!shiftFlag && !ctrlFlag && !altFlag && !keyPressed){
         this->clearFocus();
     }
 }
 
 void KeyHooker::unregister()
 {
-    bool is = UnregisterHotKey(GLOBAL::mainId, this->keyId);
-    qDebug() << is << " -unreg";
+    UnregisterHotKey(GLOBAL::mainId, this->keyId);
+    this->setText("");
+    QSettings settings;
+    settings.remove("hotkeys/"+keyName(this->keyId)+"_mod");
+    settings.remove("hotkeys/"+keyName(this->keyId)+"_key");
 }

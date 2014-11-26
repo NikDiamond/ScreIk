@@ -14,6 +14,7 @@
 #include <QDebug>
 #include <QMenu>
 #include <QAction>
+#include <QSettings>
 #include <QDesktopServices>
 #include <QCryptographicHash>
 #include <QXmlStreamWriter>
@@ -30,6 +31,8 @@ class MainClass : public QMainWindow
 public:
     explicit MainClass(QWidget *parent = 0);
     ~MainClass();
+    QString modString(int modId);
+    void startSettings();
     void setTrayIcon();
     void setIconImage(QString icon);
     void createXMLFile();
@@ -62,7 +65,6 @@ private:
     QString _email;
     QString _password;
     HookKeyboard *hooker;
-    bool prtProtect;
 };
 
 #endif // MAINCLASS_H
