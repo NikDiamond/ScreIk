@@ -15,13 +15,13 @@
 		for($i=1;$i<=$num;$i++){
 			$res = mysqli_fetch_array($query);
 			$path = 'l/m/'.$res['name'];
-			echo '<a target="_blank" href="l/'.$res['name'].'" class="accountUploadItem" id="'.$res['id'].'">';
+			echo '<div class="itemWrap"><a target="_blank" href="l/'.$res['name'].'" class="accountUploadItem" id="'.$res['id'].'">';
 			if(file_exists('../'.$path)){
 				echo '<img src="'.$path.'">';
 			}else{
 				echo '<img src="/css/img/oldVersion.png">';
 			}
-			echo '</a>';
+			echo '</a></div>';
 			$lastItem = $res['id'];
 		}
 		if($num == 0 || !$showMore){

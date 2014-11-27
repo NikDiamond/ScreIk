@@ -1,9 +1,13 @@
 *{margin:0;padding:0;}
+@font-face {
+	font-family: OpenSans;
+	src: url("OpenSans.ttf");
+}
 body
 {
+	font-family: OpenSans;
     height: 100%;
     min-height: 100%;
-	background: #f0f0f0;
 }
 input[type=text],input[type=password]{
 	cursor: pointer;
@@ -47,14 +51,13 @@ input[type=submit]:hover,{
 	display: block;
 	width: 392px;
 	height: 127px;
-	background: url("img/logo.png");
+	background: url("img/logo-acc.png");
 	margin: 0 auto;
 	margin-bottom: 10px;
 }
 .accountMenu{
 	height: 40px;
 	background: #ccc;
-	background: url("img/menuBack.png");
 }
 .left{
 	float: left;
@@ -75,7 +78,7 @@ input[type=submit]:hover,{
 	float: left;
 }
 .accountMenu a:hover{
-	background: url("img/menuBackInvert.png");
+	background: #ddd;
 }
 .accountUploads{
 	padding: 7.5px;
@@ -83,15 +86,16 @@ input[type=submit]:hover,{
 	border-top: none;
 }
 .accountUploadItem{
+	
+}
+.itemWrap{
 	width: 100px;
 	height: 100px;
 	display: inline-block;
 	margin: 8px;
 }
 .accountUploadItem img{
-	-webkit-box-shadow: 0px 0px 3px 0px rgba(50, 50, 50, 1);
-	-moz-box-shadow:    0px 0px 3px 0px rgba(50, 50, 50, 1);
-	box-shadow:         0px 0px 3px 0px rgba(50, 50, 50, 1);
+	border: 2px solid #ccc;
 }
 .download{
 	width: 150px;
@@ -106,9 +110,6 @@ input[type=submit]:hover,{
 	margin-top: 200px;
 	margin-left: 0;
 	padding-top: 16.5px;
-	-webkit-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.75);
-	-moz-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.75);
-	box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.75);
 }
 .logo{
 	width: 392px;
@@ -118,7 +119,7 @@ input[type=submit]:hover,{
 	margin-bottom: 10px;
 }
 .buttons{
-	width: 392px;
+	width: 452px;
 	height: 50px;
 	margin: 0 auto;
 	overflow: visible;
@@ -126,20 +127,22 @@ input[type=submit]:hover,{
 }
 .btn{
 	display: block;
-	width: 150px;
-	height: 50px;
+	width: 177px;
+	height: 41px;
 	float: left;
 	margin-left: 30px;
 	opacity: 0.8;
-	-webkit-box-shadow: 0px 2px 10px -5px rgba(0,0,0,0.75);
-	-moz-box-shadow: 0px 2px 10px -5px rgba(0,0,0,0.75);
-	box-shadow: 0px 2px 10px -5px rgba(0,0,0,0.75);
+	border: 2px solid #fff;
+	text-align: center;
+	padding-top: 5px;
+	font-size: 24px;
+}
+.btn {
+	text-decoration: none;
+	color: #fff;
 }
 .downloadBtn{
-	background: url('img/download.png');
-}
-.accountBtn{
-	background: url('img/account.png');
+	overflow: hidden;
 }
 .regForm{
 	width: 60%;
