@@ -31,7 +31,7 @@ if(move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)){
 	imagecopyresampled($image_p, $image, 0, 0, $xMargin, $yMargin, 100, 100, $side, $side);
 	imagepng($image_p, $minDir.$nm, 0);
 	
-	$mysqli->query("INSERT INTO `screenshots` (`name`, `userId`) VALUES('$nm', '".$res['id']."')");
+	$mysqli->query("INSERT INTO `screenshots` (`name`, `date`, `userId`) VALUES('$nm', NOW(), '".$res['id']."')");
 	echo 'http://'.$_SERVER['HTTP_HOST'].'/'.$uploadFile;
 }else{
 	echo 'error';

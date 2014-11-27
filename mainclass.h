@@ -40,6 +40,7 @@ public:
     void toAuth();
     QString passHash(QString pass);
     void startAuth();
+    void setRegRun(bool state);
 protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result);
     void keyPressEvent(QKeyEvent *event);
@@ -58,6 +59,8 @@ private slots:
     void areaGot(int x, int y, int w, int h);
     void on_toAccount_clicked();
     void emitPress(HookKeyboard::HookKey key);
+    void on_autorunBox_toggled(bool checked);
+
 private:
     Ui::MainClass *ui;
     QSystemTrayIcon *trayIcon;

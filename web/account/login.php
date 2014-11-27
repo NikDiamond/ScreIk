@@ -22,7 +22,7 @@ if($authByKey){
 if(isset($_POST['query'])){//Если запрос послан
 	//Обрабатываем данные
 	$email = $mysqli->real_escape_string(htmlspecialchars(trim($_POST['email'])));
-	$password = trim($_POST['password']);
+	$password = md5(md5(trim($_POST['password'])));
 	
 	$query = $mysqli->query("SELECT * FROM `users` WHERE `email` = '$email' AND `password` = '$password'");
 	if($query){

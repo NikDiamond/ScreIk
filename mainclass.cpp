@@ -18,7 +18,6 @@ MainClass::MainClass(QWidget *parent) :
     hooker->startHook();
 
     connect(hooker, SIGNAL(keyPress(HookKeyboard::HookKey)), this, SLOT(emitPress(HookKeyboard::HookKey)));
-
     connect(ui->password, SIGNAL(returnPressed()), ui->login, SLOT(click()));
     connect(ui->email, SIGNAL(returnPressed()), ui->login, SLOT(click()));
 
@@ -116,6 +115,22 @@ void MainClass::startAuth()
     }
 }
 
+void MainClass::setRegRun(bool state)
+{
+    if(state){
+        #ifdef Q_OS_WIN32
+        QSettings autorun("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+        autorun.setValue("ScreIk",QCoreApplication::applicationFilePath());
+        autorun.sync();
+        #endif
+    }else{
+        #ifdef Q_OS_WIN32
+        QSettings autorun("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+        autorun.remove("ScreIk");
+        #endif
+    }
+}
+
 bool MainClass::nativeEvent(const QByteArray &eventType, void *message, long *result)
 {
     MSG* msg = static_cast<MSG*>(message);
@@ -196,7 +211,10 @@ QString MainClass::modString(int modId)
 void MainClass::startSettings()
 {
     QSettings settings;
+    if(settings.value("general/autorun", true).toBool())
+        setRegRun(true);
     GLOBAL::quality = settings.value("general/quality", 60).toInt();
+    ui->autorunBox->setChecked(settings.value("general/autorun", true).toBool());
     //hotkeys
     RegisterHotKey((HWND)winId(), 0, settings.value("hotkeys/fullscreen_mod", 0).toUInt(), settings.value("hotkeys/fullscreen_key", VK_SNAPSHOT).toUInt());//full
     ui->keyhook_full->setText(modString(settings.value("hotkeys/fullscreen_mod", 0).toUInt()) + settings.value("hotkeys/fullscreen_text", "NULL").toString());
@@ -309,4 +327,16 @@ void MainClass::openAccountSite()
 void MainClass::on_toAccount_clicked()
 {
     openAccountSite();
+}
+
+void MainClass::on_autorunBox_toggled(bool checked)
+{
+    if(checked)
+        setRegRun(true);
+    else
+        setRegRun(false);
+
+    QSettings settings;
+    settings.setValue("general/autorun", checked);
+    settings.sync();
 }

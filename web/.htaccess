@@ -1,3 +1,4 @@
 AddDefaultCharset 'utf8'
 php_flag short_open_tag on
 #ErrorDocument 404 /403.php
+php_value date.timezone Europe/Moscow

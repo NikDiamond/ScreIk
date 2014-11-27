@@ -42,11 +42,6 @@ input[type=submit]:hover,{
 	margin: 0 auto;
 	margin-bottom: 30px;
 }
-.shadowWrap{
-	-webkit-box-shadow: 0px 5px 8px 0px rgba(50, 50, 50, 0.09);
-	-moz-box-shadow:    0px 5px 8px 0px rgba(50, 50, 50, 0.09);
-	box-shadow:         0px 5px 8px 0px rgba(50, 50, 50, 0.09);
-}
 .accountLogo{
 	display: block;
 	width: 392px;
@@ -85,17 +80,14 @@ input[type=submit]:hover,{
 	border: 2px solid #ccc;
 	border-top: none;
 }
-.accountUploadItem{
-	
-}
 .itemWrap{
 	width: 100px;
 	height: 100px;
 	display: inline-block;
-	margin: 8px;
-}
-.accountUploadItem img{
+	margin: 6px;
 	border: 2px solid #ccc;
+	position: relative;
+	overflow: hidden;
 }
 .download{
 	width: 150px;
@@ -160,6 +152,24 @@ input[type=submit]:hover,{
 }
 .regForm input[type=submit]{
 	margin-top: 6px;
+}
+.itemTop, .itemBottom{
+	width: 100px;
+	height: 20px;
+	position: absolute;
+	background: rgba(0,0,0,0.5);
+	color: #fff;
+	text-align: center;
+	font-size: 15px;
+}
+.itemBottom{
+	height: 35px;
+}
+.itemTop{
+	margin-top: -20px;
+}
+.itemBottom{
+	margin-top: 100px;
 }
 #moreLink{
 	display: block;
