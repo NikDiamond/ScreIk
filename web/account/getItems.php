@@ -16,10 +16,11 @@
 			$res = mysqli_fetch_array($query);
 			$path = 'l/m/'.$res['name'];
 			echo '<div class="itemWrap" id="'.$res['id'].'">';
-			echo '<a target="_blank" href="l/'.$res['name'].'" class="accountUploadItem">';
 				echo '<div class="itemTop" id="itemTop-'.$res['id'].'">';
+					echo '<a class="itemRemove" id="itemRemove-'.$res['id'].'" title="Удалить" href="javascript://" onClick="removeScreen('.$res['id'].');"></a>';
 					echo (integer)(filesize("../l/".$res['name'])/1024) . ' KB';
 				echo '</div>';
+			echo '<a target="_blank" href="l/'.$res['name'].'" class="accountUploadItem">';
 				echo '<div class="itemBottom" id="itemBottom-'.$res['id'].'">';
 					echo date('H:i', strtotime($res['date'])).'<br>';
 					echo '<p style="font-size: 11px">'.date('d.m.Y', strtotime($res['date'])).'</p>';

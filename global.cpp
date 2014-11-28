@@ -1,6 +1,6 @@
 #include "global.h"
 
-int GLOBAL::quality = 60;
+int GLOBAL::quality = 0;
 bool GLOBAL::authorized = false;
 QString GLOBAL::domain = "nikdiamond.hol.es";
 HWND GLOBAL::mainId = 0;

@@ -26,7 +26,7 @@ $(document).ready(function() {
 		},50);
 	});
 	$('.downloadBtn').hover(function() {
-		$(this).html('ScreIk 0.2.5b');
+		$(this).html('ScreIk 0.3b');
 	}, function() {
 		$(this).html('скачать');
 	});

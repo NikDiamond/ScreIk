@@ -4,11 +4,13 @@ AreaClass::AreaClass(QWidget *parent) :
     QWidget(parent),x(0),y(0),w(0),h(0)
 {
     this->setWindowFlags(windowFlags() | Qt::Tool);
+    this->setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+    this->setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
     this->setStyleSheet("background: rgb(255,255,255)");
-    this->setWindowOpacity(.01);
-    this->setCursor(Qt::CrossCursor);
-    this->showFullScreen();
-    this->setFixedSize(this->size());
+    this->setWindowOpacity(0.01);
+    this->setCursor (Qt::CrossCursor);
+    this->setFixedSize(QApplication::desktop()->screen()->width(),QApplication::desktop()->screen()->height());
+    this->show();
 
     drawer = new DrawerClass();
     shortcut = new QShortcut(Qt::Key_Escape, this);
@@ -28,6 +30,7 @@ AreaClass::~AreaClass()
 
 void AreaClass::mousePressEvent(QMouseEvent *event)
 {
+    this->setFixedSize(1,1);
     event->accept();
     startPosition = event->pos();
 }
@@ -51,14 +54,14 @@ void AreaClass::mouseMoveEvent(QMouseEvent *event)
         h = startPosition.y() - event->pos().y();
     }
     drawer->setGeometry(x,y,w,h);
-    drawer->show();
-    drawer->repaint();
+    if(!drawer->isVisible())
+        drawer->show();
 }
 
 void AreaClass::mouseReleaseEvent(QMouseEvent *event)
 {
-    this->setWindowOpacity(0);
     event->accept();
+    this->setWindowOpacity(0);
     endPosition = event->pos();
     if(startPosition.x() < endPosition.x()){
         x = startPosition.x();

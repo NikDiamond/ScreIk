@@ -38,3 +38,4 @@ FORMS    += mainclass.ui
 RESOURCES += \
     icons.qrc
 
+win32:RC_FILE = iconset.rc

@@ -9,6 +9,8 @@
 #include <QMouseEvent>
 #include <QPixmap>
 #include <QBitmap>
+#include <QApplication>
+#include <QDesktopWidget>
 
 class AreaClass : public QWidget
 {

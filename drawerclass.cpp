@@ -3,7 +3,9 @@
 DrawerClass::DrawerClass(QWidget *parent) :
     QWidget(parent)
 {
-    this->setWindowFlags(Qt::FramelessWindowHint);
+    this->setWindowFlags(windowFlags() | Qt::Tool);
+    this->setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
+    this->setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
     this->setWindowOpacity(.2);
 }
 

@@ -10,6 +10,11 @@ MainClass::MainClass(QWidget *parent) :
     startSettings();
 
     this->setFixedSize(this->size());
+    ui->label->hide();
+    ui->label_2->hide();
+    ui->quality->hide();
+    ui->label_3->hide();
+
     ui->quality->setValue(GLOBAL::quality);
     ui->accountGroup->setVisible(false);
     setTrayIcon();
@@ -120,7 +125,7 @@ void MainClass::setRegRun(bool state)
     if(state){
         #ifdef Q_OS_WIN32
         QSettings autorun("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
-        autorun.setValue("ScreIk",QCoreApplication::applicationFilePath());
+        autorun.setValue("ScreIk","\""+QCoreApplication::applicationFilePath()+"\"");
         autorun.sync();
         #endif
     }else{
@@ -213,7 +218,6 @@ void MainClass::startSettings()
     QSettings settings;
     if(settings.value("general/autorun", true).toBool())
         setRegRun(true);
-    GLOBAL::quality = settings.value("general/quality", 60).toInt();
     ui->autorunBox->setChecked(settings.value("general/autorun", true).toBool());
     //hotkeys
     RegisterHotKey((HWND)winId(), 0, settings.value("hotkeys/fullscreen_mod", 0).toUInt(), settings.value("hotkeys/fullscreen_key", VK_SNAPSHOT).toUInt());//full

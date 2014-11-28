@@ -78,7 +78,7 @@ input[type=submit]:hover,{
 .accountUploads{
 	padding: 7.5px;
 	border: 2px solid #ccc;
-	border-top: none;
+	border-top: 1px solid #ccc;
 }
 .itemWrap{
 	width: 100px;
@@ -153,23 +153,44 @@ input[type=submit]:hover,{
 .regForm input[type=submit]{
 	margin-top: 6px;
 }
-.itemTop, .itemBottom{
+.itemTop, .itemBottom, .itemRemoved{
 	width: 100px;
 	height: 20px;
 	position: absolute;
 	background: rgba(0,0,0,0.5);
 	color: #fff;
 	text-align: center;
-	font-size: 15px;
-}
-.itemBottom{
-	height: 35px;
+	font-size: 15px; 
 }
 .itemTop{
+	cursor: default;
 	margin-top: -20px;
 }
 .itemBottom{
+	height: 35px;
 	margin-top: 100px;
+}
+.itemRemoved{
+	cursor: default;
+	opacity: 0.8;
+	z-index: 1;
+	height: 30px;
+	margin-top: 35px;
+	margin-left: -100px;
+	font-size: 20px;
+}
+.itemRemove{
+	display: block;
+	cursor: pointer;
+	height: 100%;
+	width: 20px;
+	opacity: .7;
+	background: url('img/remove.png') no-repeat;
+	background-position: center center;
+	float: right;
+}
+.itemRemove:hover{
+	opacity: 1;
 }
 #moreLink{
 	display: block;
@@ -195,4 +216,16 @@ input[type=submit]:hover,{
 	background-image: url('img/loading.gif') !important;
 	background-repeat: no-repeat !important;
 	background-position: 5px 5px !important;
+}
+.accountDetails{
+	width: 0;
+	height: 0;
+	opacity: 0;
+	background: #eaeaea;
+	overflow: hidden;
+}
+.accountDetails span{
+	display: block;
+	padding: 10px;
+	opacity: 0;
 }
