@@ -4,10 +4,10 @@
 #include "screenclass.h"
 #include "loginclass.h"
 #include "global.h"
-#include "areaclass.h"
 #include "siteopen.h"
 #include "keyhooker.h"
 #include "hookkeyboard.h"
+#include "areascreen.h"
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
@@ -64,7 +64,7 @@ private slots:
 private:
     Ui::MainClass *ui;
     QSystemTrayIcon *trayIcon;
-    AreaClass *areaScreener;
+    AreaScreen *areaScreener;
     QString _email;
     QString _password;
     HookKeyboard *hooker;

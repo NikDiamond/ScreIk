@@ -17,17 +17,14 @@ $(document).ready(function() {
 	$('.btn').hover(function() {
 		$(this).animate({
 			opacity: 1,
-			borderRadius: '5px',
+			backgroundColor: '#fff',
+			color: '#777',
 		},100);
 	},function() {
 		$(this).animate({
 			opacity: 0.8,
-			borderRadius: 0,
-		},50);
-	});
-	$('.downloadBtn').hover(function() {
-		$(this).html('ScreIk 0.3b');
-	}, function() {
-		$(this).html('скачать');
+			backgroundColor: 'transparent',
+			color: '#fff',
+		},100);
 	});
 });

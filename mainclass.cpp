@@ -125,7 +125,7 @@ void MainClass::setRegRun(bool state)
     if(state){
         #ifdef Q_OS_WIN32
         QSettings autorun("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
-        autorun.setValue("ScreIk","\""+QCoreApplication::applicationFilePath()+"\"");
+        autorun.setValue("ScreIk",QCoreApplication::applicationFilePath().replace("/","\\"));
         autorun.sync();
         #endif
     }else{
@@ -182,14 +182,15 @@ void MainClass::screenArea()
         ui->tabWidget->setCurrentIndex(1);
         this->setFocus();
     }else{
-        areaScreener = new AreaClass();
+        //area screen
+        areaScreener = new AreaScreen();
         connect(areaScreener, SIGNAL(completed(int,int,int,int)), this, SLOT(areaGot(int,int,int,int)));
     }
 }
 
 void MainClass::areaGot(int x, int y, int w, int h)
 {
-    areaScreener->deleteLater();
+    delete areaScreener;
     screen(x, y, w, h);
 }
 

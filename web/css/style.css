@@ -11,8 +11,8 @@ body
 }
 input[type=text],input[type=password]{
 	cursor: pointer;
-	border: 1px solid #aaa;
-	background: #ccc;
+	border: 1px solid #bdc3c7;
+	background: #bdc3c7;
 	padding: 4px;
 	height: 17px;
 	border-radius: 5px;
@@ -26,11 +26,11 @@ input[type=submit]{
 	padding: 4px;
 	background: #f0f0f0;
 	opacity: 0.6;
-	border: 2px solid #777;
+	border: 2px solid #333;
 	margin-right: 10px;
 }
 input[type=submit]:hover,{
-	background: #ddd;
+	background: #ecf0f1;
 }
 .wrapper{
 	width: 100%;
@@ -52,7 +52,7 @@ input[type=submit]:hover,{
 }
 .accountMenu{
 	height: 40px;
-	background: #ccc;
+	background: #bdc3c7;
 }
 .left{
 	float: left;
@@ -69,23 +69,23 @@ input[type=submit]:hover,{
 	padding-left: 7px;
 	padding-right: 7px;
 	text-decoration: none;
-	color: #777;
+	color: #333;
 	float: left;
 }
 .accountMenu a:hover{
-	background: #ddd;
+	background: #ced4d8;
 }
 .accountUploads{
 	padding: 7.5px;
-	border: 2px solid #ccc;
-	border-top: 1px solid #ccc;
+	border: 2px solid #bdc3c7;
+	border-top: 1px solid #bdc3c7;
 }
 .itemWrap{
 	width: 100px;
 	height: 100px;
 	display: inline-block;
-	margin: 6px;
-	border: 2px solid #ccc;
+	margin: 7px;
+	border: 1px solid #bdc3c7;
 	position: relative;
 	overflow: hidden;
 }
@@ -98,7 +98,7 @@ input[type=submit]:hover,{
 .mainPage{
 	width: 100%;
 	height: 200px;
-	background: #aaa;
+	background: #bdc3c7;
 	margin-top: 200px;
 	margin-left: 0;
 	padding-top: 16.5px;
@@ -128,13 +128,13 @@ input[type=submit]:hover,{
 	text-align: center;
 	padding-top: 5px;
 	font-size: 24px;
-}
-.btn {
 	text-decoration: none;
 	color: #fff;
 }
 .downloadBtn{
 	overflow: hidden;
+	padding-top: 2px;
+	padding-bottom: 3px;
 }
 .regForm{
 	width: 60%;
@@ -196,7 +196,7 @@ input[type=submit]:hover,{
 	display: block;
 	padding: 5px;
 	text-align: center;
-	color: #777;
+	color: #333;
 	text-decoration: none;
 	background: #ddd;
 	margin-left: -7.5px;
@@ -208,7 +208,7 @@ input[type=submit]:hover,{
 }
 .moreDown{
 	background: #f0f0f0 !important;
-	border-top: 2px solid #ccc !important;
+	border-top: 2px solid #bdc3c7 !important;
 	padding-top: 4px !important;
 	padding-bottom: 4px !important;
 }
@@ -228,4 +228,9 @@ input[type=submit]:hover,{
 	display: block;
 	padding: 10px;
 	opacity: 0;
+}
+ver{
+	display: block;
+	margin-top: -8px;
+	font-size: 10px;
 }
