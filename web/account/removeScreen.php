@@ -10,7 +10,7 @@
 		if(!empty($res['id'])){
 			$remQ = $mysqli->query("DELETE FROM `screenshots` WHERE `id` = ".$_POST['id']);
 			if($remQ){
-				if(unlink("../l/".$res['name']) && unlink("../l/m/".$res['name'])){
+				if(unlink("../l/".$res['name']) && unlink("../l/m/".substr($res['name'], 0, -4).'.jpg')){
 					die("true");
 				}
 			}else{

@@ -14,7 +14,7 @@
 		$lastItem = 0;
 		for($i=1;$i<=$num;$i++){
 			$res = mysqli_fetch_array($query);
-			$path = 'l/m/'.$res['name'];
+			$path = 'l/m/'.substr($res['name'], 0, -4).'.jpg';
 			echo '<div class="itemWrap" id="'.$res['id'].'">';
 				echo '<div class="itemTop" id="itemTop-'.$res['id'].'">';
 					echo '<a class="itemRemove" id="itemRemove-'.$res['id'].'" title="Удалить" href="javascript://" onClick="removeScreen('.$res['id'].');"></a>';
@@ -27,6 +27,8 @@
 				echo '</div>';
 			if(file_exists('../'.$path)){
 				echo '<img src="'.$path.'">';
+			}else if(file_exists('../'.substr($path, 0, -4).'.png')){
+				echo '<img src="'.substr($path, 0, -4).'.png">';
 			}else{
 				echo '<img src="/css/img/oldVersion.png">';
 			}

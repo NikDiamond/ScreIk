@@ -48,7 +48,6 @@ private slots:
     void trayActivate(QSystemTrayIcon::ActivationReason r);
     void screen(int x = 0, int y = 0, int w = -1, int h = -1);
     void screenArea();
-    void on_quality_valueChanged(int value);
     void uploadProgress(qint64 bytes, qint64 total);
     void uploadFinished();
     void on_signup_clicked();
@@ -60,6 +59,7 @@ private slots:
     void on_toAccount_clicked();
     void emitPress(HookKeyboard::HookKey key);
     void on_autorunBox_toggled(bool checked);
+    void on_jpeg_toggled(bool checked);
 
 private:
     Ui::MainClass *ui;

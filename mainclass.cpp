@@ -10,12 +10,7 @@ MainClass::MainClass(QWidget *parent) :
     startSettings();
 
     this->setFixedSize(this->size());
-    ui->label->hide();
-    ui->label_2->hide();
-    ui->quality->hide();
-    ui->label_3->hide();
 
-    ui->quality->setValue(GLOBAL::quality);
     ui->accountGroup->setVisible(false);
     setTrayIcon();
     startAuth();
@@ -220,20 +215,14 @@ void MainClass::startSettings()
     if(settings.value("general/autorun", true).toBool())
         setRegRun(true);
     ui->autorunBox->setChecked(settings.value("general/autorun", true).toBool());
+    //quality box
+    ui->png->setChecked(settings.value("general/png", false).toBool());
     //hotkeys
     RegisterHotKey((HWND)winId(), 0, settings.value("hotkeys/fullscreen_mod", 0).toUInt(), settings.value("hotkeys/fullscreen_key", VK_SNAPSHOT).toUInt());//full
     ui->keyhook_full->setText(modString(settings.value("hotkeys/fullscreen_mod", 0).toUInt()) + settings.value("hotkeys/fullscreen_text", "NULL").toString());
 
     RegisterHotKey((HWND)winId(), 1, settings.value("hotkeys/areascreen_mod", MOD_ALT).toUInt(), settings.value("hotkeys/areascreen_key", VK_SNAPSHOT).toUInt());//area
     ui->keyhook_area->setText(modString(settings.value("hotkeys/areascreen_mod", MOD_ALT).toUInt()) + settings.value("hotkeys/areascreen_text", "NULL").toString());
-}
-
-void MainClass::on_quality_valueChanged(int value)
-{
-    GLOBAL::quality = value;
-    QSettings settings;
-    settings.setValue("general/quality", value);
-    settings.sync();
 }
 
 void MainClass::uploadProgress(qint64 bytes, qint64 total)
@@ -343,5 +332,12 @@ void MainClass::on_autorunBox_toggled(bool checked)
 
     QSettings settings;
     settings.setValue("general/autorun", checked);
+    settings.sync();
+}
+
+void MainClass::on_jpeg_toggled(bool checked)
+{
+    QSettings settings;
+    settings.setValue("general/png", !checked);
     settings.sync();
 }

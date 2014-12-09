@@ -7,14 +7,48 @@ ScreenClass::ScreenClass(QObject *parent) :
 void ScreenClass::doScreen(QString email, QString pass, int x, int y, int w, int h)
 {
     QScreen *screen = QGuiApplication::primaryScreen();
+    qDebug() << "[" << QTime::currentTime().toString() << "] Screening...";
     if(screen){
+        QSettings settings;
+        QString ext;
+        bool isPNG = settings.value("general/png", false).toBool();
+        if(isPNG) ext = "png"; else ext = "jpg";
+
         srand(QDateTime::currentMSecsSinceEpoch());
-        QString fileName = QDir::tempPath()+"\\NikScreen"+QString::number(rand())+".png";
-        qDebug() << "File: " << fileName << ", q: " << GLOBAL::quality;
-
+        QString fileName = QDir::tempPath()+"\\NikScreen"+QString::number(rand())+"."+ext;
         QPixmap pixmap = screen->grabWindow(0, x, y, w, h);
-        pixmap.save(fileName, "PNG", GLOBAL::quality);
 
+        QString checkString = fileName;
+        QString pngName = checkString.replace(QString(".jpg"), QString(".png"));
+        pixmap.save(pngName, "PNG", GLOBAL::quality);
+
+        if(!isPNG){//If not only png, checking jpeg size
+            QString jpgName = checkString.replace(QString(".png"), QString(".jpg"));
+            pixmap.save(jpgName, "JPG", 100);
+
+            QFileInfo pngInfo(pngName);
+            QFileInfo jpgInfo(jpgName);
+
+            qDebug() << "(JPEG)" << jpgInfo.size()/1024 << "KB VS " << pngInfo.size()/1024 << "KB (PNG)";
+            if(jpgInfo.size() < pngInfo.size()){
+                //saving jpeg, removing png
+                fileName = jpgName;
+                ext = "jpg";
+                QFile *remFile = new QFile(pngName);
+                if(remFile->open(QIODevice::ReadOnly))
+                    remFile->remove();
+                delete remFile;
+            }else{
+                //saving png, removing jpeg
+                fileName = pngName;
+                ext = "png";
+                QFile *remFile = new QFile(jpgName);
+                if(remFile->open(QIODevice::ReadOnly))
+                    remFile->remove();
+                delete remFile;
+            }
+        }
+        qDebug() << "File: " << fileName << ", q: " << GLOBAL::quality;
         //POSTING FORM DATA
         QUrl url("http://"+GLOBAL::domain+"/upload.php?email="+email+"&passHash="+pass);
         QString bound="margin";
@@ -24,7 +58,7 @@ void ScreenClass::doScreen(QString email, QString pass, int x, int y, int w, int
         data.append("--" + bound + "\r\n");
         QFileInfo fileInfo(fileName);
         data.append("Content-Disposition: form-data; name=\"file\"; filename=\""+fileInfo.fileName()+"\"\r\n");
-        data.append("Content-Type: image/png\r\n\r\n");
+        data.append("Content-Type: image/"+ext+"\r\n\r\n");
 
         QFile *upFile = new QFile(fileName);
         if(upFile->open(QIODevice::ReadOnly)){
@@ -42,6 +76,7 @@ void ScreenClass::doScreen(QString email, QString pass, int x, int y, int w, int
             connect(reply, SIGNAL(uploadProgress(qint64,qint64)), SLOT(uploadProgress(qint64,qint64)));
             upFile->remove();
             upFile->close();
+            qDebug() << "[" << QTime::currentTime().toString() << "] File closed";
         }
     }
 }

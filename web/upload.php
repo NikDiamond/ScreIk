@@ -1,22 +1,39 @@
 <?php
 include("connect.php");
+//authorize check
 $email = $_GET['email'];
 $passHash = $_GET['passHash'];
 $query = $mysqli->query("SELECT * FROM `users` WHERE `email`='$email' AND `password`='$passHash'") or die("sqlError");
 $res = mysqli_fetch_array($query);
 if(empty($res['id']))
 	die('badLogin');
-
+	
 $uploadDir = 'l/';
 $minDir = $uploadDir.'m/';
+$isPng = false;//false if jpeg
+
+$ext = strtolower(pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION));
+switch($ext){
+	case "png"://png file
+		$isPng = true;
+	break;
+	case "jpg":case "jpeg"://jpeg file
+		$isPng = false;
+		$ext = "jpg";
+	break;
+	default:
+		die("wrongFile");
+	break;
+}
+//get new file random name
 $nameHash = md5(basename($_FILES['file']['name']).time());
 $nameHash = substr($nameHash, 0, 6).substr($nameHash, strlen($nameHash)-6, 6);
-$uploadFile = $uploadDir.$nameHash.'.png';
-if(move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)){
-	$nm = $nameHash.'.png';
-	$forResize = $uploadDir.$nm;
-	
-	list($width, $height) = getimagesize($forResize);
+$uploadFile = $uploadDir.$nameHash.'.'.$ext;
+
+if(move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)){//moving file to path
+	$name = $nameHash.'.'.$ext;//just file name
+	//creating small copy of image
+	list($width, $height) = getimagesize($uploadFile);
 	if($width < $height){//Выбираем квадрат
 		$side = $width;
 		$yMargin = ($height - $width)/2;
@@ -27,11 +44,15 @@ if(move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)){
 		$ymargin = 0;
 	}
 	$image_p = imagecreatetruecolor(100, 100);
-	$image = imagecreatefrompng($forResize);
-	imagecopyresampled($image_p, $image, 0, 0, $xMargin, $yMargin, 100, 100, $side, $side);
-	imagepng($image_p, $minDir.$nm, 0);
+	if($isPng)
+		$image = imagecreatefrompng($uploadFile);
+	else 
+		$image = imagecreatefromjpeg($uploadFile);
 	
-	$mysqli->query("INSERT INTO `screenshots` (`name`, `date`, `userId`) VALUES('$nm', NOW(), '".$res['id']."')");
+	imagecopyresampled($image_p, $image, 0, 0, $xMargin, $yMargin, 100, 100, $side, $side);
+	imagejpeg($image_p, $minDir.$nameHash.'.jpg');
+	
+	$mysqli->query("INSERT INTO `screenshots` (`name`, `date`, `userId`) VALUES('$name', NOW(), '".$res['id']."')");
 	echo 'http://'.$_SERVER['HTTP_HOST'].'/'.$uploadFile;
 }else{
 	echo 'error';

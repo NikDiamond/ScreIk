@@ -13,6 +13,8 @@
 #include <QDateTime>
 #include <QByteArray>
 #include <QClipboard>
+#include <QSettings>
+#include <QTime>
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
