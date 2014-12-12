@@ -8,9 +8,14 @@ AreaHook::AreaHook(QObject *parent) :
     m_start = false;
 }
 
+void AreaHook::deleteNow()
+{
+    wCursor->hide();
+    wCursor->deleteLater();
+}
+
 AreaHook::~AreaHook()
 {
-
 }
 
 LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {

@@ -49,13 +49,15 @@ private slots:
     void screenArea();
     void screenWnd();
     void uploadProgress(qint64 bytes, qint64 total);
-    void uploadFinished();
+    void uploadFinished(QString link);
     void on_signup_clicked();
     void on_login_clicked();
     void authReply(QString rp);
     void on_logout_clicked();
     void openAccountSite();
     void areaGot(int x, int y, int w, int h);
+    void areaBroken();
+    void openScreen();
     void on_toAccount_clicked();
     void emitPress(HookKeyboard::HookKey key);
     void on_autorunBox_toggled(bool checked);
@@ -65,6 +67,8 @@ private:
     Ui::MainClass *ui;
     QSystemTrayIcon *trayIcon;
     AreaScreen *areaScreener;
+    bool areaBusy;
+    QString lastLink;
     QString _email;
     QString _password;
     HookKeyboard *hooker;

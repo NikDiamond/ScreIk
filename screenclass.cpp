@@ -96,6 +96,6 @@ void ScreenClass::uploadFinished(QNetworkReply *reply)
     QClipboard *clipboard = QApplication::clipboard();
     clipboard->setText(rp);
 
-    emit finished();
+    emit finished(rp);
     deleteLater();
 }

@@ -35,7 +35,7 @@ private:
     QNetworkReply *reply;
 signals:
     void progress(qint64, qint64);
-    void finished();
+    void finished(QString);
 };
 
 #endif // SCREENCLASS_H

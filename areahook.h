@@ -22,6 +22,7 @@ private:
     QWidget *wCursor;
 public:
     static AreaHook *instance();
+    void deleteNow();
     void endHook();
     void startHook();
 public slots:

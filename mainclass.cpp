@@ -7,6 +7,7 @@ MainClass::MainClass(QWidget *parent) :
     ui(new Ui::MainClass)
 {
     ui->setupUi(this);
+    areaBusy = false;
     startSettings();
 
     this->setFixedSize(this->size());
@@ -50,7 +51,6 @@ void MainClass::setTrayIcon()
     QAction *actAcc = new QAction(QIcon("://icons/icon.ico"), "Аккаунт",trayMenu);
     QAction *actScreen = new QAction(QIcon("://icons/fullscreen.ico"), "Скрин",trayMenu);
     QAction *actArea = new QAction(QIcon("://icons/area.ico"), "Скрин области",trayMenu);
-    QAction *actWnd = new QAction(QIcon("://icons/window.ico"), "Скрин окна",trayMenu);
     QAction *actOpen = new QAction(QIcon("://icons/settings.ico"), "Настройки",trayMenu);
     QAction *actExit = new QAction(QIcon("://icons/exit.ico"), "Выход",trayMenu);
 
@@ -58,7 +58,6 @@ void MainClass::setTrayIcon()
     trayMenu->addSeparator();
     trayMenu->addAction(actScreen);
     trayMenu->addAction(actArea);
-    trayMenu->addAction(actWnd);
     trayMenu->addSeparator();
     trayMenu->addAction(actOpen);
     trayMenu->addAction(actExit);
@@ -67,7 +66,6 @@ void MainClass::setTrayIcon()
     connect(actAcc, SIGNAL(triggered()), this, SLOT(openAccountSite()));
     connect(actScreen, SIGNAL(triggered()), this, SLOT(screen()));
     connect(actArea, SIGNAL(triggered()), this, SLOT(screenArea()));
-    connect(actWnd, SIGNAL(triggered()), this, SLOT(screenWnd()));
     connect(actOpen, SIGNAL(triggered()), this, SLOT(show()));
     connect(actExit, SIGNAL(triggered()), qApp, SLOT(quit()));
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayActivate(QSystemTrayIcon::ActivationReason)));
@@ -170,7 +168,7 @@ void MainClass::screen(int x, int y, int w, int h)
         screener->doScreen(_email, _password, x, y, w, h);
 
         connect(screener, SIGNAL(progress(qint64,qint64)), this, SLOT(uploadProgress(qint64,qint64)));
-        connect(screener, SIGNAL(finished()), this, SLOT(uploadFinished()));
+        connect(screener, SIGNAL(finished(QString)), this, SLOT(uploadFinished(QString)));
     }else{
         toAuth();
     }
@@ -185,8 +183,13 @@ void MainClass::screenArea()
         this->setFocus();
     }else{
         //area screen
-        areaScreener = new AreaScreen();
-        connect(areaScreener, SIGNAL(completed(int,int,int,int)), this, SLOT(areaGot(int,int,int,int)));
+        if(!areaBusy){
+            qDebug() << "area";
+            areaBusy = true;
+            areaScreener = new AreaScreen();
+            connect(areaScreener, SIGNAL(completed(int,int,int,int)), this, SLOT(areaGot(int,int,int,int)));
+            connect(areaScreener, SIGNAL(broken()), this, SLOT(areaBroken()));
+        }
     }
 }
 
@@ -208,9 +211,14 @@ void MainClass::screenWnd()
 void MainClass::areaGot(int x, int y, int w, int h)
 {
     delete areaScreener;
+    areaBusy = false;
     screen(x, y, w, h);
 }
 
+void MainClass::areaBroken()
+{
+    areaBusy = false;
+}
 MainClass::~MainClass()
 {
     delete ui;
@@ -267,10 +275,19 @@ void MainClass::uploadProgress(qint64 bytes, qint64 total)
     }
 }
 
-void MainClass::uploadFinished()
+void MainClass::uploadFinished(QString link)
 {
+    lastLink = link;
     setIconImage(":/icons/icon.ico");
+    trayIcon->showMessage("Готово!","Скриншот загружен. Нажмите на это сообщение, чтобы открыть его.", QSystemTrayIcon::Information, 1000);
+    connect(trayIcon, SIGNAL(messageClicked()), this, SLOT(openScreen()));
     qApp->beep();
+}
+
+void MainClass::openScreen()
+{
+    trayIcon->disconnect(this, SLOT(openScreen()));
+    QDesktopServices::openUrl(QUrl(lastLink));
 }
 
 void MainClass::on_signup_clicked()

@@ -8,6 +8,7 @@ AreaScreen::AreaScreen(QWidget *parent) :
     this->setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
     this->setWindowOpacity(.2);
 
+    RegisterHotKey((HWND)this->winId(), 0, 0, static_cast<int>(VK_ESCAPE));
     hooker = AreaHook::instance();
     hooker->startHook();
 
@@ -18,6 +19,24 @@ AreaScreen::AreaScreen(QWidget *parent) :
 AreaScreen::~AreaScreen()
 {
     hooker->deleteLater();
+}
+
+bool AreaScreen::nativeEvent(const QByteArray &eventType, void *message, long *result)
+{
+    if(eventType == QByteArray() || result == 0){}
+    MSG* msg = static_cast<MSG*>(message);
+    if (msg->message == WM_HOTKEY)
+    {
+        switch(msg->wParam){
+        case 0:
+            hooker->endHook();
+            hooker->deleteNow();
+            emit broken();
+            delete this;
+        break;
+        }
+    }
+    return false;
 }
 
 void AreaScreen::paintEvent(QPaintEvent *event)

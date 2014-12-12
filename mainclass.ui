@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ScreIk 0.4.5b</string>
+   <string>ScreIk 0.5b</string>
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
@@ -31,7 +31,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="tabsClosable">
      <bool>false</bool>
@@ -117,7 +117,7 @@
              <item>
               <widget class="QRadioButton" name="png">
                <property name="text">
-                <string>Только PNG</string>
+                <string>Только PNG (медленнее)</string>
                </property>
               </widget>
              </item>
