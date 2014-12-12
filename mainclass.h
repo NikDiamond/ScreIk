@@ -43,11 +43,11 @@ public:
     void setRegRun(bool state);
 protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result);
-    void keyPressEvent(QKeyEvent *event);
 private slots:
     void trayActivate(QSystemTrayIcon::ActivationReason r);
     void screen(int x = 0, int y = 0, int w = -1, int h = -1);
     void screenArea();
+    void screenWnd();
     void uploadProgress(qint64 bytes, qint64 total);
     void uploadFinished();
     void on_signup_clicked();

@@ -24,11 +24,12 @@ MainClass::MainClass(QWidget *parent) :
     GLOBAL::mainId = (HWND)winId();
     ui->keyhook_full->setTarget(0);
     ui->keyhook_area->setTarget(1);
+    ui->keyhook_wnd->setTarget(2);
 }
-
 
 void MainClass::emitPress(HookKeyboard::HookKey key)
 {
+    if(key == static_cast<HookKeyboard::HookKey>(0)){}
     if(QApplication::focusWidget() != NULL){
         QKeyEvent *emitEvent = new QKeyEvent(QEvent::KeyPress, Qt::Key_Print, Qt::NoModifier, 0, VK_SNAPSHOT, 0, "Prt Screen");
         QKeyEvent *emitEventRelease = new QKeyEvent(QEvent::KeyRelease, Qt::Key_Print, Qt::NoModifier, 0, VK_SNAPSHOT, 0, "Prt Screen");
@@ -40,27 +41,25 @@ void MainClass::emitPress(HookKeyboard::HookKey key)
     hooker->startHook();
 }
 
-void MainClass::keyPressEvent(QKeyEvent *event)
-{
-
-}
-
 void MainClass::setTrayIcon()
 {
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setIcon(QIcon(":/icons/icon.ico"));
     trayIcon->show();
     QMenu *trayMenu = new QMenu(this);
-    QAction *actAcc = new QAction("Аккаунт",trayMenu);
-    QAction *actScreen = new QAction("Скрин",trayMenu);
-    QAction *actArea = new QAction("Скрин области",trayMenu);
-    QAction *actOpen = new QAction("Настройки",trayMenu);
-    QAction *actExit = new QAction("Выход",trayMenu);
+    QAction *actAcc = new QAction(QIcon("://icons/icon.ico"), "Аккаунт",trayMenu);
+    QAction *actScreen = new QAction(QIcon("://icons/fullscreen.ico"), "Скрин",trayMenu);
+    QAction *actArea = new QAction(QIcon("://icons/area.ico"), "Скрин области",trayMenu);
+    QAction *actWnd = new QAction(QIcon("://icons/window.ico"), "Скрин окна",trayMenu);
+    QAction *actOpen = new QAction(QIcon("://icons/settings.ico"), "Настройки",trayMenu);
+    QAction *actExit = new QAction(QIcon("://icons/exit.ico"), "Выход",trayMenu);
 
     trayMenu->addAction(actAcc);
     trayMenu->addSeparator();
     trayMenu->addAction(actScreen);
     trayMenu->addAction(actArea);
+    trayMenu->addAction(actWnd);
+    trayMenu->addSeparator();
     trayMenu->addAction(actOpen);
     trayMenu->addAction(actExit);
     trayIcon->setContextMenu(trayMenu);
@@ -68,6 +67,7 @@ void MainClass::setTrayIcon()
     connect(actAcc, SIGNAL(triggered()), this, SLOT(openAccountSite()));
     connect(actScreen, SIGNAL(triggered()), this, SLOT(screen()));
     connect(actArea, SIGNAL(triggered()), this, SLOT(screenArea()));
+    connect(actWnd, SIGNAL(triggered()), this, SLOT(screenWnd()));
     connect(actOpen, SIGNAL(triggered()), this, SLOT(show()));
     connect(actExit, SIGNAL(triggered()), qApp, SLOT(quit()));
     connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayActivate(QSystemTrayIcon::ActivationReason)));
@@ -133,6 +133,7 @@ void MainClass::setRegRun(bool state)
 
 bool MainClass::nativeEvent(const QByteArray &eventType, void *message, long *result)
 {
+    if(eventType == QByteArray() || result == 0){}
     MSG* msg = static_cast<MSG*>(message);
     if (msg->message == WM_HOTKEY)
     {
@@ -143,6 +144,9 @@ bool MainClass::nativeEvent(const QByteArray &eventType, void *message, long *re
         case 1:
             screenArea();
         break;
+        case 2:
+            screenWnd();
+        break;
         }
     }
     return false;
@@ -150,9 +154,12 @@ bool MainClass::nativeEvent(const QByteArray &eventType, void *message, long *re
 void MainClass::trayActivate(QSystemTrayIcon::ActivationReason r)
 {
     if(r==QSystemTrayIcon::Trigger){//click
-        toAuth();
-    }else if(r==QSystemTrayIcon::MiddleClick){//debug
-        qDebug() << QApplication::topLevelWidgets();
+        if(!this->isVisible()){
+            this->show();
+            this->activateWindow();
+        }
+        else
+            this->hide();
     }
 }
 
@@ -180,6 +187,21 @@ void MainClass::screenArea()
         //area screen
         areaScreener = new AreaScreen();
         connect(areaScreener, SIGNAL(completed(int,int,int,int)), this, SLOT(areaGot(int,int,int,int)));
+    }
+}
+
+void MainClass::screenWnd()
+{
+    if(!GLOBAL::authorized){
+        if(!this->isVisible())
+            this->show();
+        ui->tabWidget->setCurrentIndex(1);
+        this->setFocus();
+    }else{
+        //window screen
+        RECT pt;
+        GetWindowRect(GetForegroundWindow(),&pt);
+        screen(pt.left, pt.top, pt.right-pt.left, pt.bottom-pt.top);
     }
 }
 
@@ -219,10 +241,13 @@ void MainClass::startSettings()
     ui->png->setChecked(settings.value("general/png", false).toBool());
     //hotkeys
     RegisterHotKey((HWND)winId(), 0, settings.value("hotkeys/fullscreen_mod", 0).toUInt(), settings.value("hotkeys/fullscreen_key", VK_SNAPSHOT).toUInt());//full
-    ui->keyhook_full->setText(modString(settings.value("hotkeys/fullscreen_mod", 0).toUInt()) + settings.value("hotkeys/fullscreen_text", "NULL").toString());
+    ui->keyhook_full->setText(modString(settings.value("hotkeys/fullscreen_mod", 0).toUInt()) + settings.value("hotkeys/fullscreen_text", "Print").toString());
 
     RegisterHotKey((HWND)winId(), 1, settings.value("hotkeys/areascreen_mod", MOD_ALT).toUInt(), settings.value("hotkeys/areascreen_key", VK_SNAPSHOT).toUInt());//area
-    ui->keyhook_area->setText(modString(settings.value("hotkeys/areascreen_mod", MOD_ALT).toUInt()) + settings.value("hotkeys/areascreen_text", "NULL").toString());
+    ui->keyhook_area->setText(modString(settings.value("hotkeys/areascreen_mod", MOD_ALT).toUInt()) + settings.value("hotkeys/areascreen_text", "Print").toString());
+
+    RegisterHotKey((HWND)winId(), 2, settings.value("hotkeys/wndscreen_mod", MOD_SHIFT).toUInt(), settings.value("hotkeys/wndscreen_key", VK_SNAPSHOT).toUInt());//area
+    ui->keyhook_wnd->setText(modString(settings.value("hotkeys/wndscreen_mod", MOD_SHIFT).toUInt()) + settings.value("hotkeys/wndscreen_text", "Print").toString());
 }
 
 void MainClass::uploadProgress(qint64 bytes, qint64 total)

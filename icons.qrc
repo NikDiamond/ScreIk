@@ -7,5 +7,10 @@
         <file>icons/icon60.ico</file>
         <file>icons/icon80.ico</file>
         <file>icons/icon100.ico</file>
+        <file>icons/exit.ico</file>
+        <file>icons/fullscreen.ico</file>
+        <file>icons/settings.ico</file>
+        <file>icons/window.ico</file>
+        <file>icons/area.ico</file>
     </qresource>
 </RCC>

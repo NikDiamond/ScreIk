@@ -581,6 +581,13 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QLabel" name="label_8">
+             <property name="text">
+              <string>Скриншот окна:</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </item>
          <item>
@@ -606,6 +613,13 @@
            </item>
            <item>
             <widget class="KeyHooker" name="keyhook_area">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="KeyHooker" name="keyhook_wnd">
              <property name="text">
               <string/>
              </property>

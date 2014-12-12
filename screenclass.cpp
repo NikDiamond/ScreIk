@@ -29,7 +29,6 @@ void ScreenClass::doScreen(QString email, QString pass, int x, int y, int w, int
             QFileInfo pngInfo(pngName);
             QFileInfo jpgInfo(jpgName);
 
-            qDebug() << "(JPEG)" << jpgInfo.size()/1024 << "KB VS " << pngInfo.size()/1024 << "KB (PNG)";
             if(jpgInfo.size() < pngInfo.size()){
                 //saving jpeg, removing png
                 fileName = jpgName;

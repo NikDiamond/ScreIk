@@ -28,6 +28,9 @@ QString KeyHooker::keyName(int hotkeyId)
     case 1:
         return "areascreen";
         break;
+    case 2:
+        return "wndscreen";
+        break;
     default:
         return "";
     }
