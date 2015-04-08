@@ -8,13 +8,13 @@ class core{
 	public function getPagePath($name){
 		switch($name){
 			case 'login':
-				return 'account/login.php';
+				return 'acc/login.php';
 			break;
 			case 'signup':
-				return 'account/signup.php';
+				return 'acc/signup.php';
 			break;
 			case 'account':
-				return 'account/index.php';
+				return 'acc/index.php';
 			break;
 			default:
 				return 'main-page.php';

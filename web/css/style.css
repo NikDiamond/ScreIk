@@ -229,8 +229,12 @@ input[type=submit]:hover,{
 	padding: 10px;
 	opacity: 0;
 }
-ver{
+.downloadBtn span{
 	display: block;
 	margin-top: -8px;
 	font-size: 10px;
+}
+.adsbygoogle{
+	margin: 0 auto;
+	display: block !important;
 }

@@ -1,6 +1,6 @@
 function moreItems(from){
 	$.ajax({
-		url: "/account/getItems.php",
+		url: "/acc/getItems.php",
 		type: "POST",
 		data: {
 			"from": from,
@@ -14,7 +14,7 @@ function moreItems(from){
 function removeScreen(id){
 	$('#itemRemove-'+id).animateRotate(360, 400);
 	$.ajax({
-		url: "/account/removeScreen.php",
+		url: "/acc/removeScreen.php",
 		type: "POST",
 		data: {
 			"id": id,

@@ -1,4 +1,6 @@
-AddDefaultCharset 'utf8'
+AddDefaultCharset UTF-8
 php_flag short_open_tag on
-#ErrorDocument 404 /403.php
 php_value date.timezone Europe/Moscow
+RewriteEngine on 
+RewriteRule ^([a-z_A-Z_0-9]+)$ index.php?p=$1
+RewriteRule ^([a-z_A-Z_0-9]+)/$ index.php?p=$1
