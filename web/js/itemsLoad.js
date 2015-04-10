@@ -8,6 +8,7 @@ function moreItems(from){
 		success: function(html) {
 			$('#moreLink').remove();
 			$('.accountUploads').append(html);
+			$("html, body").animate({ scrollTop: $(document).height() }, 400);
 		}
 	});
 }

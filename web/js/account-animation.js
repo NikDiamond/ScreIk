@@ -43,29 +43,23 @@ $(document).ready(function() {
 });
 function openDetails() {
 	if($('.accountDetails').css('height') == '0px'){//open
-		$('.accountDetails').animate({
+		$('.accountDetails').css({
+			width: '100%'
+		}).animate({
 			opacity: 1,
 			height: '60px',
-		},200,function() {
-			$(this).animate({
-				width: '100%',
-			}, 200, function() {
-				$('.accountDetails span').animate({
-					opacity: 1,
-				}, 100);
-			});
+		},200, function() {
+			$('.accountDetails span').animate({
+				opacity: 1,
+			}, 100);
 		});
 	}else{//close
 		$('.accountDetails span').animate({
 			opacity: 0,
 		}, 100);
 		$('.accountDetails').animate({
-			width: 0,
-		},200,function() {
-			$(this).animate({
-				opacity: 0,
-				height: 0,
-			}, 200);
-		});
+			opacity: 0,
+			height: 0,
+		}, 200);
 	}
 }

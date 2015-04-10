@@ -2,7 +2,7 @@
 class core{
 	function __construct(){}
 	public function showError($message){
-		echo $message;
+		echo '<div class="accountWrap"><a href="/" class="accountLogo"></a><div class="shadowWrap"><div class="accountUploads"><center>'.$message.'<br><br><a href="javascript://" onClick="history.back();" class="boxLink">Назад</a></center></div></div></div>';
 		return true;
 	}
 	public function getPagePath($name){
@@ -15,6 +15,9 @@ class core{
 			break;
 			case 'account':
 				return 'acc/index.php';
+			break;
+			case 'resetPassword':
+				return 'acc/reset.php';
 			break;
 			default:
 				return 'main-page.php';

@@ -38,12 +38,14 @@ if(isset($_POST['query'])){//Если запрос послан
 	}
 }else{
 ?>
-<script src="/js/form-animation.js" type="text/javascript"></script>
 <div class="accountWrap">
 	<a href="/" class="accountLogo">
 	</a>
 	<div class="shadowWrap">
 		<div class="accountMenu">
+			<div class="left">
+				<a href="/resetPassword">Забыли пароль?</a>
+			</div>
 			<div class="right">
 				<a href="/signup">Зарегистрироваться</a>
 			</div>
@@ -51,9 +53,9 @@ if(isset($_POST['query'])){//Если запрос послан
 		<div class="accountUploads">
 			<form action="#" method="POST" name="regForm" class="regForm">
 				<input type="hidden" name="query">
-				<div class="formCell">E-Mail: <input type="text" name="email"></div>
-				<div class="formCell">Пароль: <input type="password" name="password"></div>
-				<input type="submit" name="submit" value="Вход">
+				<input type="text" name="email" placeholder="E-Mail">
+				<br><input type="password" name="password" placeholder="Пароль">
+				<br><input type="submit" name="submit" value="Вход">
 			</form>
 		</div>
 	</div>

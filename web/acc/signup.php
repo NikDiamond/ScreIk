@@ -28,26 +28,26 @@ if(isset($_POST['query'])){//Если запрос послан
 								}
 							}
 						}else{
-							$core->showError('Ошибка sql.');
+							$core->showError('Ошибка sql');
 						}
 					}else{
-						$core->showError('Пароли не совпадают.');
+						$core->showError('Пароли не совпадают');
 					}
 				}else{
-					$core->showError('Пользователь с таким E-mail уже существует.');
+					$core->showError('Такой E-mail уже зарегистрирован');
 				}
 			}else{
-				$core->showError('Ошибка sql.');
+				$core->showError('Ошибка sql');
 			}
 		}else{
-			$core->showError('E-mail введён некорректно.');
+			$core->showError('E-mail введён некорректно');
 		}
 	}else{
-		$core->showError('Некорректно заполнены данные.');
+		$core->showError('Некорректно заполнены данные');
 	}
 }else{
 ?>
-<script src="js/form-animation.js" type="text/javascript"></script>
+<script src="/js/RegCheck.js" type="text/javascript"></script>
 <div class="accountWrap">
 	<a href="/" class="accountLogo">
 	</a>
@@ -60,9 +60,9 @@ if(isset($_POST['query'])){//Если запрос послан
 		<div class="accountUploads">
 			<form action="#" method="POST" name="regForm" class="regForm">
 				<input type="hidden" name="query">
-				<div class="formCell">E-Mail: <input type="text" name="email"></div>
-				<div class="formCell">Пароль: <input type="password" name="password"></div>
-				<div class="formCell">Повтор пароля: <input type="password" name="rePassword"></div>
+				<input type="text" name="email" placeholder="E-Mail">
+				<input type="password" name="password" placeholder="Пароль">
+				<input type="password" name="rePassword" placeholder="Ещё раз пароль">
 				<input type="submit" name="submit" value="Регистрация">
 			</form>
 		</div>

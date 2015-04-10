@@ -38,7 +38,7 @@
 		}
 		//echo '<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><!-- Screik account top --><ins class="adsbygoogle"     style="display:inline-block;width:320px;height:100px"     data-ad-client="ca-pub-8208099690229615"     data-ad-slot="9493910488"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script>';
 		if($num == 0 || !$showMore){
-			echo '<center style="color: #999">Загружены все скриншоты</center>';
+			echo '<center class="allLoaded">Загружены все скриншоты</center>';
 		}
 	}
 	if($showMore){
