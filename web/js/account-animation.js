@@ -25,18 +25,18 @@ $(document).ready(function() {
 		}, 200);
 	}).delegate(".itemWrap", "mouseenter", function() {
 		var id = $(this).attr('id');
-		$('#itemTop-'+id).animate({
+		$('#itemTop-'+id).stop().animate({
 			marginTop: 0,
 		}, 100);
-		$('#itemBottom-'+id).animate({
+		$('#itemBottom-'+id).stop().animate({
 			marginTop: '65px',
 		}, 100);
 	}).delegate(".itemWrap", "mouseleave", function() {
 		var id = $(this).attr('id');
-		$('#itemTop-'+id).animate({
+		$('#itemTop-'+id).stop().animate({
 			marginTop: '-20px',
 		}, 100);
-		$('#itemBottom-'+id).animate({
+		$('#itemBottom-'+id).stop().animate({
 			marginTop: '100px',
 		}, 100);
 	});

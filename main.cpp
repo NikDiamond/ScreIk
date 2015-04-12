@@ -10,6 +10,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(QObject::tr("ScreIk"));
 
     MainClass w;
+    w.setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint);
 
     return a.exec();
 }

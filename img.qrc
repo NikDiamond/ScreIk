@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>icons/background.png</file>
+        <file>icons/tpbg.png</file>
+        <file>icons/radio.png</file>
+        <file>icons/radio_checked.png</file>
+        <file>icons/radio_hover.png</file>
+        <file>icons/radio_pressed.png</file>
+        <file>icons/check.png</file>
+        <file>icons/check_hover.png</file>
+        <file>icons/check_pressed.png</file>
+        <file>icons/check_checked.png</file>
+    </qresource>
+</RCC>

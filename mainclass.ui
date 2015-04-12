@@ -6,32 +6,139 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>250</width>
-    <height>161</height>
+    <width>260</width>
+    <height>160</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Roboto</family>
+   </font>
+  </property>
   <property name="windowTitle">
-   <string>ScreIk 0.5b</string>
+   <string>ScreIk 0.6b</string>
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
     <normaloff>:/icons/icon.ico</normaloff>:/icons/icon.ico</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">QWidget{
+	color: #fff;
+	font: &quot;Roboto&quot;;
+}
+QMenu{
+	color: #000;
+}
+QRadioButton:indicator{
+	background-image: url(:/img/icons/radio.png);
+	width: 20px;
+	height: 20px;
+}
+QRadioButton:indicator:hover{
+	background-image: url(:/img/icons/radio_hover.png);
+}
+QRadioButton:indicator:pressed{
+	background-image: url(:/img/icons/radio_pressed.png);
+}
+QRadioButton:indicator:checked{
+	background-image: url(:/img/icons/radio_checked.png);
+}
+QCheckBox:indicator{
+	background-image: url(:/img/icons/check.png);
+	width: 15px;
+	height: 15px;
+}
+QCheckBox:indicator:hover{
+	background-image: url(:/img/icons/check_hover.png);
+}
+QCheckBox:indicator:pressed{
+	background-image: url(:/img/icons/check_pressed.png);
+}
+QCheckBox:indicator:checked{
+	background-image: url(:/img/icons/check_checked.png);
+}
+QPushButton{
+	background: transparent;
+	border: 2px solid #fff;
+	padding: 4px;
+}
+QPushButton:hover{
+	background-image: url(:/img/icons/tpbg.png);
+}
+QLineEdit{
+	background: transparent;
+	border: 2px solid #fff;
+	padding: 2px;
+}</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="font">
+    <font>
+     <family>Roboto</family>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QGroupBox::title{
+	border-left: 2px solid #fff;
+	padding-bottom: 2px;
+	padding-left: 3px;
+} 
+QGroupBox{
+	border: none;
+}
+#centralWidget{
+	background-image: url(:/img/icons/background.png);
+}</string>
+   </property>
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>1</x>
-      <y>1</y>
-      <width>250</width>
+      <x>0</x>
+      <y>0</y>
+      <width>261</width>
       <height>161</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Roboto</family>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">:tab:selected
+{
+	padding-top: 2px;
+	background-image: url(:/img/icons/tpbg.png);
+	border-bottom: 1px solid #fff;
+}
+:tab
+{
+	border: none;
+	padding: 7px;
+	color: #fff;
+}
+QTabWidget::pane {
+	border: 0;
+	border-top: 1px solid #fff;
+	color: #fff !important;
+	background-image: url(:/img/icons/tpbg.png);
+}</string>
+    </property>
+    <property name="tabPosition">
+     <enum>QTabWidget::North</enum>
+    </property>
+    <property name="tabShape">
+     <enum>QTabWidget::Rounded</enum>
+    </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
+    </property>
+    <property name="elideMode">
+     <enum>Qt::ElideNone</enum>
+    </property>
+    <property name="usesScrollButtons">
+     <bool>true</bool>
     </property>
     <property name="tabsClosable">
      <bool>false</bool>
@@ -45,11 +152,14 @@
        <rect>
         <x>2</x>
         <y>3</y>
-        <width>241</width>
+        <width>247</width>
         <height>131</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>6</number>
+       </property>
        <property name="leftMargin">
         <number>4</number>
        </property>
@@ -70,73 +180,46 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
+        <layout class="QVBoxLayout" name="verticalLayout_9">
          <property name="topMargin">
           <number>0</number>
          </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
          <item>
-          <widget class="QGroupBox" name="groupBox">
-           <property name="title">
+          <widget class="QLabel" name="label">
+           <property name="text">
             <string>Качество</string>
            </property>
-           <property name="flat">
+          </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="jpeg">
+           <property name="text">
+            <string>JPEG/PNG (умный выбор, рекомендуется)</string>
+           </property>
+           <property name="checked">
             <bool>true</bool>
            </property>
-           <widget class="QWidget" name="verticalLayoutWidget_7">
-            <property name="geometry">
-             <rect>
-              <x>3</x>
-              <y>13</y>
-              <width>236</width>
-              <height>82</height>
-             </rect>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_9">
-             <property name="topMargin">
-              <number>5</number>
-             </property>
-             <item>
-              <widget class="QRadioButton" name="jpeg">
-               <property name="text">
-                <string>JPEG/PNG (умный выбор, рекомендуется)</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="png">
-               <property name="text">
-                <string>Только PNG (медленнее)</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="verticalSpacer">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </widget>
           </widget>
+         </item>
+         <item>
+          <widget class="QRadioButton" name="png">
+           <property name="text">
+            <string>Только PNG (медленнее)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </item>
@@ -150,10 +233,10 @@
      <widget class="QWidget" name="verticalLayoutWidget_3">
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>244</width>
-        <height>161</height>
+        <x>-1</x>
+        <y>-1</y>
+        <width>261</width>
+        <height>235</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -161,7 +244,7 @@
         <number>5</number>
        </property>
        <property name="topMargin">
-        <number>3</number>
+        <number>7</number>
        </property>
        <property name="rightMargin">
         <number>3</number>
@@ -186,27 +269,27 @@
          <widget class="QWidget" name="verticalLayoutWidget_2">
           <property name="geometry">
            <rect>
-            <x>3</x>
-            <y>14</y>
-            <width>231</width>
-            <height>141</height>
+            <x>0</x>
+            <y>20</y>
+            <width>251</width>
+            <height>146</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <property name="spacing">
-            <number>2</number>
+            <number>4</number>
            </property>
            <property name="leftMargin">
-            <number>4</number>
+            <number>20</number>
            </property>
            <property name="topMargin">
-            <number>4</number>
+            <number>0</number>
            </property>
            <property name="rightMargin">
-            <number>4</number>
+            <number>20</number>
            </property>
            <property name="bottomMargin">
-            <number>4</number>
+            <number>0</number>
            </property>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -287,42 +370,6 @@
             </layout>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_7">
-             <property name="leftMargin">
-              <number>3</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>3</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QCheckBox" name="remember">
-               <property name="text">
-                <string>Запомнить меня</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_5">
              <property name="leftMargin">
               <number>3</number>
@@ -338,6 +385,12 @@
              </property>
              <item>
               <widget class="QPushButton" name="login">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>Вход</string>
                </property>
@@ -406,6 +459,9 @@
        </item>
        <item>
         <widget class="QGroupBox" name="accountGroup">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
            <horstretch>0</horstretch>
@@ -423,27 +479,30 @@
            <rect>
             <x>0</x>
             <y>14</y>
-            <width>235</width>
+            <width>251</width>
             <height>139</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
+           <property name="spacing">
+            <number>4</number>
+           </property>
            <property name="leftMargin">
-            <number>3</number>
+            <number>20</number>
            </property>
            <property name="topMargin">
-            <number>3</number>
+            <number>4</number>
            </property>
            <property name="rightMargin">
-            <number>3</number>
+            <number>20</number>
            </property>
            <property name="bottomMargin">
-            <number>3</number>
+            <number>0</number>
            </property>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_10">
              <property name="leftMargin">
-              <number>3</number>
+              <number>0</number>
              </property>
              <property name="topMargin">
               <number>3</number>
@@ -459,6 +518,9 @@
                <property name="text">
                 <string/>
                </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
               </widget>
              </item>
             </layout>
@@ -466,13 +528,13 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_9">
              <property name="leftMargin">
-              <number>3</number>
+              <number>0</number>
              </property>
              <property name="topMargin">
               <number>3</number>
              </property>
              <property name="rightMargin">
-              <number>3</number>
+              <number>0</number>
              </property>
              <property name="bottomMargin">
               <number>3</number>
@@ -522,7 +584,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>244</width>
+        <width>261</width>
         <height>135</height>
        </rect>
       </property>

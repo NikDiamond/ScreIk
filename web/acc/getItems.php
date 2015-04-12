@@ -4,9 +4,14 @@
 	include('../core.class.php');
 	$core = new core();
 	$core->startAuth();
-	$query = $mysqli->query("SELECT * FROM `screenshots` WHERE `userId` = '".$_SESSION['id']."' AND `id` <= ".$_POST['from']." ORDER by `id` DESC");
+	$sort = $_POST['sort'];
+	$desc = 'DESC';$sign = '<';
+	if($sort == 'old') {
+		$desc = '';$sign = '>';
+	}
+	$query = $mysqli->query("SELECT * FROM `screenshots` WHERE `userId` = '".$_SESSION['id']."' AND `id` ".$sign."= ".$_POST['from']." ORDER by `id` ".$desc);
 	if($_POST['from'] == 0)
-		$query = $mysqli->query("SELECT * FROM `screenshots` WHERE `userId` = '".$_SESSION['id']."' ORDER by `id` DESC");
+		$query = $mysqli->query("SELECT * FROM `screenshots` WHERE `userId` = '".$_SESSION['id']."' ORDER by `id` ".$desc);
 	if($query){
 		$num = mysqli_num_rows($query);
 		$showMore = false;
@@ -36,7 +41,6 @@
 			echo '</div>';
 			$lastItem = $res['id'];
 		}
-		//echo '<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script><!-- Screik account top --><ins class="adsbygoogle"     style="display:inline-block;width:320px;height:100px"     data-ad-client="ca-pub-8208099690229615"     data-ad-slot="9493910488"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script>';
 		if($num == 0 || !$showMore){
 			echo '<center class="allLoaded">Загружены все скриншоты</center>';
 		}

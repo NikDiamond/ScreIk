@@ -12,6 +12,7 @@ if(!$core->isAuth()){echo '<script type="text/javascript">location.href="/login"
 			<div class="left">
 				<a href="/">Главная</a>
 			</div>
+			<div class="acc-icon" onClick="changeSort()"><img src="/css/img/sort<?=$_COOKIE['sort']?>.png"></div>
 			<div class="right">
 				<a href="javascript://" onClick="openDetails();"><?=$_SESSION['email']?></a>
 				<a href="/logout.php">Выход</a>

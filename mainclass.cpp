@@ -279,7 +279,6 @@ void MainClass::uploadFinished(QString link)
 {
     lastLink = link;
     setIconImage(":/icons/icon.ico");
-    trayIcon->showMessage("Готово!","Скриншот загружен. Нажмите на это сообщение, чтобы открыть его.", QSystemTrayIcon::Information, 1000);
     connect(trayIcon, SIGNAL(messageClicked()), this, SLOT(openScreen()));
     qApp->beep();
 }
@@ -324,7 +323,7 @@ void MainClass::authReply(QString rp)
         ui->accountGroup->setVisible(true);
         ui->authGroup->setVisible(false);
 
-        if(ui->remember->isChecked()){
+        if(ui->email->text() != ""){
             _email = ui->email->text();
             _password = passHash(ui->password->text());
             QSettings settings;

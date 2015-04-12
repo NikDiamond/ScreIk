@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = ScreIk
 TEMPLATE = app
+QMAKE_LFLAGS += -static -static-libgcc
 
 
 SOURCES += main.cpp\
@@ -36,6 +37,7 @@ HEADERS  += mainclass.h \
 FORMS    += mainclass.ui
 
 RESOURCES += \
-    icons.qrc
+    icons.qrc \
+    img.qrc
 
 win32:RC_FILE = iconset.rc
