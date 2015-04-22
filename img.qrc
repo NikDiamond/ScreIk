@@ -10,5 +10,6 @@
         <file>icons/check_hover.png</file>
         <file>icons/check_pressed.png</file>
         <file>icons/check_checked.png</file>
+        <file>icons/logo.png</file>
     </qresource>
 </RCC>

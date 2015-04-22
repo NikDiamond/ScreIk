@@ -94,8 +94,10 @@ void ScreenClass::uploadFinished(QNetworkReply *reply)
     QString rp = reply->readAll();
     qDebug() << "Screen uploaded. [" << rp << "]";
     QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setText(rp);
+    clipboard->setText("http://"+GLOBAL::domain+"/l/"+rp);
 
-    emit finished(rp);
+    QDateTime now = QDateTime::currentDateTime();
+
+    emit finished(rp, now.toString("yyyy-MM-dd hh:mm:ss"));
     deleteLater();
 }

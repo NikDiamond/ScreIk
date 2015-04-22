@@ -14,6 +14,7 @@ public:
     static int quality;
     static bool authorized;
     static QString domain;
+    static QString userAgent;
     static HWND mainId;
 };
 

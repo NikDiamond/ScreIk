@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     keyhooker.cpp \
     hookkeyboard.cpp \
     areahook.cpp \
-    areascreen.cpp
+    areascreen.cpp \
+    story.cpp
 
 HEADERS  += mainclass.h \
     screenclass.h \
@@ -32,7 +33,8 @@ HEADERS  += mainclass.h \
     keyhooker.h \
     hookkeyboard.h \
     areahook.h \
-    areascreen.h
+    areascreen.h \
+    story.h
 
 FORMS    += mainclass.ui
 

@@ -8,7 +8,7 @@ SiteOpen::SiteOpen(QString email, QString password, QObject *parent) :
 
     QNetworkRequest req(url);
     req.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-    req.setHeader(QNetworkRequest::UserAgentHeader, "ScreeIk_1.0");
+    req.setHeader(QNetworkRequest::UserAgentHeader, GLOBAL::userAgent);
 
     reply = manager.post(req, request);
     connect(reply, SIGNAL(readyRead()), this, SLOT(keyGot()));
@@ -28,6 +28,8 @@ void SiteOpen::keyGot()
     qDebug() << "Key: " << rp;
     if(rp != "auth-error"){
         QDesktopServices::openUrl(QUrl("http://"+GLOBAL::domain+"/?p=login&key="+rp));
+    }else{
+        qDebug() << rp;
     }
     this->deleteLater();
 }

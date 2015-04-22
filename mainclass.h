@@ -8,6 +8,7 @@
 #include "keyhooker.h"
 #include "hookkeyboard.h"
 #include "areascreen.h"
+#include "story.h"
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
@@ -15,6 +16,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QSettings>
+#include <QPixmap>
 #include <QDesktopServices>
 #include <QCryptographicHash>
 #include <QXmlStreamWriter>
@@ -40,6 +42,8 @@ public:
     void toAuth();
     QString passHash(QString pass);
     void startAuth();
+    void storyFill();
+    void storyUpdate();
     void setRegRun(bool state);
 protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result);
@@ -49,7 +53,7 @@ private slots:
     void screenArea();
     void screenWnd();
     void uploadProgress(qint64 bytes, qint64 total);
-    void uploadFinished(QString link);
+    void uploadFinished(QString link, QString date);
     void on_signup_clicked();
     void on_login_clicked();
     void authReply(QString rp);
@@ -62,6 +66,10 @@ private slots:
     void emitPress(HookKeyboard::HookKey key);
     void on_autorunBox_toggled(bool checked);
     void on_jpeg_toggled(bool checked);
+    void storyLoaded(QStringList story);
+    void on_story1_clicked();
+    void on_story2_clicked();
+    void on_story3_clicked();
 
 private:
     Ui::MainClass *ui;
@@ -72,6 +80,7 @@ private:
     QString _email;
     QString _password;
     HookKeyboard *hooker;
+    QMap<QString, QStringList> storyList;
 };
 
 #endif // MAINCLASS_H

@@ -10,11 +10,15 @@ MainClass::MainClass(QWidget *parent) :
     areaBusy = false;
     startSettings();
 
+    QPixmap pix(":/img/icons/logo.png");
+    ui->logoLB->setPixmap(pix);
+
     this->setFixedSize(this->size());
 
     ui->accountGroup->setVisible(false);
     setTrayIcon();
     startAuth();
+    storyFill();
     hooker = HookKeyboard::instance();
     hooker->startHook();
 
@@ -113,6 +117,32 @@ void MainClass::startAuth()
     }
 }
 
+void MainClass::storyFill()
+{
+    story *Story = new story(this);
+    Story->getElements(_email, _password, 3);
+    connect(Story, SIGNAL(finished(QStringList)), this, SLOT(storyLoaded(QStringList)));
+}
+
+void MainClass::storyLoaded(QStringList story)
+{
+    for(int i = 0; i < story.length(); i++){
+        storyList["names"].insert(i, story[i].split('/')[0]);
+        storyList["dates"].insert(i, story[i].split('/')[1]);
+    }
+    storyUpdate();
+}
+
+void MainClass::storyUpdate()
+{
+    QList<QPushButton*> buttons;
+    buttons << ui->story1 << ui->story2 << ui->story3;
+    for(int i = 0; i < storyList["names"].length(); i++){
+        buttons[i]->setText(storyList["dates"][i]);
+        buttons[i]->setEnabled(true);
+    }
+}
+
 void MainClass::setRegRun(bool state)
 {
     if(state){
@@ -168,7 +198,7 @@ void MainClass::screen(int x, int y, int w, int h)
         screener->doScreen(_email, _password, x, y, w, h);
 
         connect(screener, SIGNAL(progress(qint64,qint64)), this, SLOT(uploadProgress(qint64,qint64)));
-        connect(screener, SIGNAL(finished(QString)), this, SLOT(uploadFinished(QString)));
+        connect(screener, SIGNAL(finished(QString, QString)), this, SLOT(uploadFinished(QString, QString)));
     }else{
         toAuth();
     }
@@ -275,12 +305,20 @@ void MainClass::uploadProgress(qint64 bytes, qint64 total)
     }
 }
 
-void MainClass::uploadFinished(QString link)
+void MainClass::uploadFinished(QString link, QString date)
 {
     lastLink = link;
     setIconImage(":/icons/icon.ico");
     connect(trayIcon, SIGNAL(messageClicked()), this, SLOT(openScreen()));
     qApp->beep();
+    //updating storyList
+    for(int i = storyList["names"].length()-1; i>0; i--){
+        storyList["names"][i] = storyList["names"][i-1];
+        storyList["dates"][i] = storyList["dates"][i-1];
+    }
+    storyList["names"][0] = link;
+    storyList["dates"][0] = date;
+    storyUpdate();
 }
 
 void MainClass::openScreen()
@@ -381,4 +419,17 @@ void MainClass::on_jpeg_toggled(bool checked)
     QSettings settings;
     settings.setValue("general/png", !checked);
     settings.sync();
+}
+
+void MainClass::on_story1_clicked()
+{
+    QDesktopServices::openUrl(QUrl("http://"+GLOBAL::domain+"/l/"+storyList["names"][0]));
+}
+void MainClass::on_story2_clicked()
+{
+    QDesktopServices::openUrl(QUrl("http://"+GLOBAL::domain+"/l/"+storyList["names"][1]));
+}
+void MainClass::on_story3_clicked()
+{
+    QDesktopServices::openUrl(QUrl("http://"+GLOBAL::domain+"/l/"+storyList["names"][2]));
 }

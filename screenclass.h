@@ -14,6 +14,7 @@
 #include <QByteArray>
 #include <QClipboard>
 #include <QSettings>
+#include <QDateTime>
 #include <QTime>
 
 #include <QNetworkAccessManager>
@@ -35,7 +36,7 @@ private:
     QNetworkReply *reply;
 signals:
     void progress(qint64, qint64);
-    void finished(QString);
+    void finished(QString, QString);
 };
 
 #endif // SCREENCLASS_H
