@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/snd">
+        <file>sound/complete.wav</file>
+    </qresource>
+</RCC>

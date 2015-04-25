@@ -2,13 +2,11 @@
 #define MAINCLASS_H
 
 #include "screenclass.h"
-#include "loginclass.h"
 #include "global.h"
-#include "siteopen.h"
 #include "keyhooker.h"
 #include "hookkeyboard.h"
 #include "areascreen.h"
-#include "story.h"
+#include "app.h"
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
@@ -17,6 +15,7 @@
 #include <QAction>
 #include <QSettings>
 #include <QPixmap>
+#include <QtMultimedia>
 #include <QDesktopServices>
 #include <QCryptographicHash>
 #include <QXmlStreamWriter>
@@ -38,13 +37,15 @@ public:
     void setTrayIcon();
     void setIconImage(QString icon);
     void createXMLFile();
-    void authGui(bool enabled);
-    void toAuth();
     QString passHash(QString pass);
-    void startAuth();
+    void auth(QString email, QString password);
+    void authOnStartUp();
     void storyFill();
     void storyUpdate();
+    void UpdateCheck();
     void setRegRun(bool state);
+    void authGui(bool enabled);
+    static void warning(QString message);
 protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result);
 private slots:
@@ -54,19 +55,22 @@ private slots:
     void screenWnd();
     void uploadProgress(qint64 bytes, qint64 total);
     void uploadFinished(QString link, QString date);
-    void on_signup_clicked();
-    void on_login_clicked();
-    void authReply(QString rp);
-    void on_logout_clicked();
-    void openAccountSite();
+    void authCheck();
+    void toAuth();
+    void getSecureKey();
+    void openSite(QString key);
     void areaGot(int x, int y, int w, int h);
     void areaBroken();
     void openScreen();
-    void on_toAccount_clicked();
     void emitPress(HookKeyboard::HookKey key);
+    void storyLoaded(QString story);
+
+    void on_signup_clicked();
+    void on_login_clicked();
+    void on_logout_clicked();
+    void on_toAccount_clicked();
     void on_autorunBox_toggled(bool checked);
     void on_jpeg_toggled(bool checked);
-    void storyLoaded(QStringList story);
     void on_story1_clicked();
     void on_story2_clicked();
     void on_story3_clicked();

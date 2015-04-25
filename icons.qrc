@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>sound/shelchok.wav</file>
         <file>icons/icon.ico</file>
         <file>icons/icon20.ico</file>
         <file>icons/icon40.ico</file>

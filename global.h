@@ -16,6 +16,7 @@ public:
     static QString domain;
     static QString userAgent;
     static HWND mainId;
+    static bool debugging;
 };
 
 #endif // GLOBAL_H

@@ -53,7 +53,8 @@ if(move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)){//moving file t
 	imagejpeg($image_p, $minDir.$nameHash.'.jpg');
 	
 	$mysqli->query("INSERT INTO `screenshots` (`name`, `date`, `userId`) VALUES('$name', NOW(), '".$res['id']."')");
-	echo 'http://'.$_SERVER['HTTP_HOST'].'/'.$uploadFile;
+	$uploadFile = explode("/", $uploadFile);
+	echo $uploadFile[1];
 }else{
 	echo 'error';
 }

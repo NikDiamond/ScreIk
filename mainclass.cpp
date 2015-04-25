@@ -17,8 +17,10 @@ MainClass::MainClass(QWidget *parent) :
 
     ui->accountGroup->setVisible(false);
     setTrayIcon();
-    startAuth();
-    storyFill();
+    authOnStartUp();
+    UpdateCheck();
+    if(GLOBAL::authorized)
+        storyFill();
     hooker = HookKeyboard::instance();
     hooker->startHook();
 
@@ -67,7 +69,7 @@ void MainClass::setTrayIcon()
     trayMenu->addAction(actExit);
     trayIcon->setContextMenu(trayMenu);
 
-    connect(actAcc, SIGNAL(triggered()), this, SLOT(openAccountSite()));
+    connect(actAcc, SIGNAL(triggered()), this, SLOT(getSecureKey()));
     connect(actScreen, SIGNAL(triggered()), this, SLOT(screen()));
     connect(actArea, SIGNAL(triggered()), this, SLOT(screenArea()));
     connect(actOpen, SIGNAL(triggered()), this, SLOT(show()));
@@ -80,20 +82,13 @@ void MainClass::setIconImage(QString icon)
     trayIcon->setIcon(QIcon(icon));
 }
 
-void MainClass::authGui(bool enabled)
-{
-    ui->login->setEnabled(enabled);
-    ui->signup->setEnabled(enabled);
-    ui->email->setEnabled(enabled);
-    ui->password->setEnabled(enabled);
-}
-
 void MainClass::toAuth()
 {
     if(!this->isVisible())
         this->show();
     ui->tabWidget->setCurrentIndex(1);
     this->setFocus();
+    authGui(true);
 }
 
 QString MainClass::passHash(QString pass)
@@ -102,16 +97,61 @@ QString MainClass::passHash(QString pass)
     pass = QString(QCryptographicHash::hash(pass.toLatin1(),QCryptographicHash::Md5).toHex());
     return pass;
 }
-void MainClass::startAuth()
+
+void MainClass::authGui(bool enabled)
+{
+    ui->login->setEnabled(enabled);
+    ui->signup->setEnabled(enabled);
+    ui->email->setEnabled(enabled);
+    ui->password->setEnabled(enabled);
+}
+
+void MainClass::warning(QString message)
+{
+    QMessageBox errorBox;
+    errorBox.setStyleSheet("QMessageBox{background-image: url(:/img/icons/background.png);color: #ffffff;}QWidget{\n	color: #fff;\n	font: \"Roboto\";\n}\nQMenu{\n	color: #000;\n}\nQRadioButton:indicator{\n	background-image: url(:/img/icons/radio.png);\n	width: 20px;\n	height: 20px;\n}\nQRadioButton:indicator:hover{\n	background-image: url(:/img/icons/radio_hover.png);\n}\nQRadioButton:indicator:pressed{\n	background-image: url(:/img/icons/radio_pressed.png);\n}\nQRadioButton:indicator:checked{\n	background-image: url(:/img/icons/radio_checked.png);\n}\nQCheckBox:indicator{\n	background-image: url(:/img/icons/check.png);\n	width: 15px;\n	height: 15px;\n}\nQCheckBox:indicator:hover{\n	background-image: url(:/img/icons/check_hover.png);\n}\nQCheckBox:indicator:pressed{\n	background-image: url(:/img/icons/check_pressed.png);\n}\nQCheckBox:indicator:checked{\n	background-image: url(:/img/icons/check_checked.png);\n}\nQPushButton{\n	background: transparent;\n	border: 2px solid #fff;\n	padding: 4px;\n}\nQPushButton:hover{\n	background-image: url(:/img/icons/tpbg.png);\n}\nQLineEdit{\n	background: transparent;\n	border: 2px solid #fff;\n	padding: 2px;\n}");
+    errorBox.setText(message);
+    QPixmap warning(":/img/icons/warning.png");
+    errorBox.setIconPixmap(warning);
+    errorBox.exec();
+}
+
+void MainClass::auth(QString email, QString password)
+{
+    App *app = new App("login", "email="+email+"&password="+password);
+    app->query();
+    connect(app, SIGNAL(finished()), this, SLOT(authCheck()));
+    connect(app, SIGNAL(failed()), this, SLOT(toAuth()));
+}
+
+void MainClass::authCheck()
+{
+    GLOBAL::authorized = true;
+    ui->accountGroup->setVisible(true);
+    ui->authGroup->setVisible(false);
+
+    if(ui->email->text() != ""){
+        _email = ui->email->text();
+        _password = passHash(ui->password->text());
+        QSettings settings;
+        settings.setValue("auth/email", _email);
+        settings.setValue("auth/password", _password);
+        settings.sync();
+    }
+    ui->accountEmail->setText(_email);
+    authGui(true);
+    storyFill();
+}
+
+void MainClass::authOnStartUp()
 {
     QSettings settings;
 
     if(settings.value("auth/email", 0) != 0 && settings.value("auth/password", 0) != 0){
         _email = settings.value("auth/email").toString();
         _password = settings.value("auth/password").toString();
-        logInClass *login = new logInClass(_email, _password, this);
-        login->tryLogin();
-        connect(login, SIGNAL(gotReply(QString)), this, SLOT(authReply(QString)));
+
+        auth(_email, _password);
     }else{
         toAuth();
     }
@@ -119,16 +159,19 @@ void MainClass::startAuth()
 
 void MainClass::storyFill()
 {
-    story *Story = new story(this);
-    Story->getElements(_email, _password, 3);
-    connect(Story, SIGNAL(finished(QStringList)), this, SLOT(storyLoaded(QStringList)));
+    int length = 3;
+    App *app = new App("getStory", "email="+_email+"&password="+_password+"&length="+length);
+    app->query();
+    connect(app, SIGNAL(finished(QString)), this, SLOT(storyLoaded(QString)));
 }
 
-void MainClass::storyLoaded(QStringList story)
+void MainClass::storyLoaded(QString story)
 {
-    for(int i = 0; i < story.length(); i++){
-        storyList["names"].insert(i, story[i].split('/')[0]);
-        storyList["dates"].insert(i, story[i].split('/')[1]);
+    story = story.simplified();
+    QStringList screens = story.split('|');
+    for(int i = 0; i < screens.length(); i++){
+        storyList["names"].insert(i, screens[i].split('/')[0]);
+        storyList["dates"].insert(i, screens[i].split('/')[1]);
     }
     storyUpdate();
 }
@@ -141,6 +184,11 @@ void MainClass::storyUpdate()
         buttons[i]->setText(storyList["dates"][i]);
         buttons[i]->setEnabled(true);
     }
+}
+
+void MainClass::UpdateCheck()
+{
+
 }
 
 void MainClass::setRegRun(bool state)
@@ -310,7 +358,8 @@ void MainClass::uploadFinished(QString link, QString date)
     lastLink = link;
     setIconImage(":/icons/icon.ico");
     connect(trayIcon, SIGNAL(messageClicked()), this, SLOT(openScreen()));
-    qApp->beep();
+    QSound::play(":/snd/sound/complete.wav");
+
     //updating storyList
     for(int i = storyList["names"].length()-1; i>0; i--){
         storyList["names"][i] = storyList["names"][i-1];
@@ -334,48 +383,17 @@ void MainClass::on_signup_clicked()
 
 void MainClass::on_login_clicked()
 {
-    ui->errString->clear();
-    authGui(false);
-
     QString email = ui->email->text();
     QString password = ui->password->text();
     password = passHash(password);
 
     if(email.length() < 4 || email.length() > 254 || password.length() < 6){
-        ui->errString->setText("Ошибка ввода.");
         ui->login->setEnabled(true);
         ui->signup->setEnabled(true);
         return;
     }
-    logInClass *login = new logInClass(email, password, this);
-    login->tryLogin();
-    connect(login, SIGNAL(gotReply(QString)), this, SLOT(authReply(QString)));
-}
-
-void MainClass::authReply(QString rp)
-{
-    if(rp == "complete"){
-        qDebug() << "Log In successful!";
-
-        GLOBAL::authorized = true;
-        ui->accountGroup->setVisible(true);
-        ui->authGroup->setVisible(false);
-
-        if(ui->email->text() != ""){
-            _email = ui->email->text();
-            _password = passHash(ui->password->text());
-            QSettings settings;
-            settings.setValue("auth/email", _email);
-            settings.setValue("auth/password", _password);
-            settings.sync();
-        }
-        ui->accountEmail->setText(_email);
-    }
-    else{
-        qDebug() << "Log In failed..." << rp;
-        toAuth();
-    }
-    authGui(true);
+    authGui(false);
+    auth(email, password);
 }
 
 void MainClass::on_logout_clicked()
@@ -391,15 +409,21 @@ void MainClass::on_logout_clicked()
     qDebug() << "Logged out!";
 }
 
-void MainClass::openAccountSite()
+void MainClass::getSecureKey()
 {
-    SiteOpen *site = new SiteOpen(_email, _password, this);
-    site->use();
+    App *app = new App("getAuthKey", "email=" + _email + "&password=" + _password);
+    app->query();
+    connect(app, SIGNAL(finished(QString)), this, SLOT(openSite(QString)));
+}
+
+void MainClass::openSite(QString key)
+{
+    QDesktopServices::openUrl(QUrl("http://"+GLOBAL::domain+"/?p=login&key="+key));
 }
 
 void MainClass::on_toAccount_clicked()
 {
-    openAccountSite();
+    getSecureKey();
 }
 
 void MainClass::on_autorunBox_toggled(bool checked)
