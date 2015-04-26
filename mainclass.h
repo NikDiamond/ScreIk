@@ -15,6 +15,12 @@
 #include <QAction>
 #include <QSettings>
 #include <QPixmap>
+#include <QDir>
+#include <QFile>
+#include <QTime>
+#include <QProcess>
+#include <QCoreApplication>
+#include <QByteArray>
 #include <QtMultimedia>
 #include <QDesktopServices>
 #include <QCryptographicHash>
@@ -42,10 +48,10 @@ public:
     void authOnStartUp();
     void storyFill();
     void storyUpdate();
-    void UpdateCheck();
+    void updateCheck();
+    void updateLoad(QString link);
     void setRegRun(bool state);
     void authGui(bool enabled);
-    static void warning(QString message);
 protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result);
 private slots:
@@ -62,8 +68,12 @@ private slots:
     void areaGot(int x, int y, int w, int h);
     void areaBroken();
     void openScreen();
+    void updateFailed();
+    void updateLoaded(QString path);
+    void updateProgress(qint64 dwn, qint64 total);
     void emitPress(HookKeyboard::HookKey key);
     void storyLoaded(QString story);
+    void updateStart(QString data);
 
     void on_signup_clicked();
     void on_login_clicked();
@@ -74,7 +84,9 @@ private slots:
     void on_story1_clicked();
     void on_story2_clicked();
     void on_story3_clicked();
-
+    void on_update_clicked();
+public slots:
+    static void warning(QString message);
 private:
     Ui::MainClass *ui;
     QSystemTrayIcon *trayIcon;

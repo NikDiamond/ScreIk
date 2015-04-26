@@ -1,6 +1,13 @@
 #include "mainclass.h"
 #include <windows.h>
 #include <QApplication>
+#include <QApplication>
+#include <QCoreApplication>
+#include <QDebug>
+#include <QFile>
+#include <QDir>
+#include <QProcess>
+#include <QMessageBox>
 
 int main(int argc, char *argv[])
 {

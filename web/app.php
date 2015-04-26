@@ -16,7 +16,7 @@ switch($act){
 				exit('success');
 		}else die('error | Поля заполнены некорректно');
 	break;
-	case "getVersion":
+	case "update":
 		exit($version.'|'.$link);
 	break;
 	case "getAuthKey":
@@ -48,6 +48,9 @@ switch($act){
 			echo $res['name'].'/'.$res['date'];
 			if($i != $num) echo '|';
 		}
+	break;
+	default:
+		die('error | hidden');
 	break;
 }
 ?>

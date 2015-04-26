@@ -7,23 +7,23 @@ MainClass::MainClass(QWidget *parent) :
     ui(new Ui::MainClass)
 {
     ui->setupUi(this);
+    this->setFixedSize(this->size());
+    ui->accountGroup->setVisible(false);
+    ui->updateBar->setVisible(false);
+    ui->aboutLabel->setText("ScreIk. Версия "+GLOBAL::version+" \n\nАвтор: NikDiamond \n\nhttp://nikd.tk/");
     areaBusy = false;
-    startSettings();
-
     QPixmap pix(":/img/icons/logo.png");
     ui->logoLB->setPixmap(pix);
 
-    this->setFixedSize(this->size());
-
-    ui->accountGroup->setVisible(false);
+    startSettings();
     setTrayIcon();
     authOnStartUp();
-    UpdateCheck();
     if(GLOBAL::authorized)
         storyFill();
+    updateCheck();
+
     hooker = HookKeyboard::instance();
     hooker->startHook();
-
     connect(hooker, SIGNAL(keyPress(HookKeyboard::HookKey)), this, SLOT(emitPress(HookKeyboard::HookKey)));
     connect(ui->password, SIGNAL(returnPressed()), ui->login, SLOT(click()));
     connect(ui->email, SIGNAL(returnPressed()), ui->login, SLOT(click()));
@@ -186,9 +186,78 @@ void MainClass::storyUpdate()
     }
 }
 
-void MainClass::UpdateCheck()
+void MainClass::updateCheck()
 {
+    ui->update->setText("Проверка...");
+    ui->update->setEnabled(false);
 
+    ui->updateBar->setMinimum(0);
+    ui->updateBar->setMaximum(0);
+    ui->updateBar->setVisible(true);
+
+    App *app = new App("update");
+    app->query();
+    connect(app, SIGNAL(finished(QString)), this, SLOT(updateStart(QString)));
+    connect(app, SIGNAL(failed()), this, SLOT(updateFailed()));
+}
+
+void MainClass::updateStart(QString data)
+{
+    QStringList updateData = data.split("|");
+    QString version = updateData[0];
+    QString link = updateData[1];
+    if(version != GLOBAL::version)
+        updateLoad(link);
+    else{
+        ui->update->setText("Обновить");
+        ui->update->setEnabled(true);
+        ui->updateBar->setVisible(false);
+    }
+}
+
+void MainClass::updateLoad(QString link)
+{
+    ui->update->setText("Обновление...");
+
+    App *app = new App(link, QCoreApplication::applicationDirPath());
+    app->download();
+    connect(app, SIGNAL(finished(QString)), this, SLOT(updateLoaded(QString)));
+    connect(app, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(updateProgress(qint64,qint64)));
+    connect(app, SIGNAL(failed()), this, SLOT(updateFailed()));
+}
+
+void MainClass::updateProgress(qint64 dwn, qint64 total)
+{
+    ui->updateBar->setVisible(true);
+    ui->updateBar->setMinimum(0);
+    ui->updateBar->setMaximum(total);
+    ui->updateBar->setValue(dwn);
+}
+
+void MainClass::updateFailed()
+{
+    warning("Ошибка подключения");
+    ui->updateBar->setVisible(false);
+    ui->update->setText("Обновить");
+    ui->update->setEnabled(true);
+}
+
+void MainClass::updateLoaded(QString path)
+{
+    ui->updateBar->setVisible(false);
+    ui->update->setText("Обновить");
+    ui->update->setEnabled(true);
+    QFileInfo info(path);
+    if(QFile::exists(info.path()+"\\ScreIkUpdate.exe")) QFile::remove(info.path()+"\\ScreIkUpdate.exe");
+    if(QFile::rename(info.absoluteFilePath(), info.path()+"\\ScreIkUpdate.exe")){
+        QTime time;
+        time.start();
+        for(;time.elapsed() < 1000;)
+        {}
+        QProcess *process = new QProcess(this);
+        if(process->startDetached("\""+info.path()+"\\ScreIkUpdater.exe\""))
+            qApp->exit(0);
+    }
 }
 
 void MainClass::setRegRun(bool state)
@@ -456,4 +525,9 @@ void MainClass::on_story2_clicked()
 void MainClass::on_story3_clicked()
 {
     QDesktopServices::openUrl(QUrl("http://"+GLOBAL::domain+"/l/"+storyList["names"][2]));
+}
+
+void MainClass::on_update_clicked()
+{
+    updateCheck();
 }

@@ -17,6 +17,7 @@ public:
     static QString userAgent;
     static HWND mainId;
     static bool debugging;
+    static QString version;
 };
 
 #endif // GLOBAL_H
