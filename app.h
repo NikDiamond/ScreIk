@@ -37,6 +37,7 @@ private slots:
     void downloaded();
     void progress(qint64 dwn, qint64 total);
     void error(QNetworkReply::NetworkError error);
+    void error(QString error);
 signals:
     void finished(QString);
     void finished();

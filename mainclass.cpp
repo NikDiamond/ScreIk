@@ -4,20 +4,13 @@
 
 MainClass::MainClass(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainClass)
+    ui(new Ui::MainClass),
+    areaBusy(false)
 {
-    ui->setupUi(this);
-    this->setFixedSize(this->size());
-    ui->accountGroup->setVisible(false);
-    ui->updateBar->setVisible(false);
-    ui->aboutLabel->setText("ScreIk. Версия "+GLOBAL::version+" \n\nАвтор: NikDiamond \n\nhttp://nikd.tk/");
-    areaBusy = false;
-    QPixmap pix(":/img/icons/logo.png");
-    ui->logoLB->setPixmap(pix);
-
-    startSettings();
-    setTrayIcon();
     authOnStartUp();
+    uiSetup();//Setting up ui
+    getRegistrySettings();//Setting ui by settings in registry
+
     if(GLOBAL::authorized)
         storyFill();
     updateCheck();
@@ -46,35 +39,6 @@ void MainClass::emitPress(HookKeyboard::HookKey key)
     hooker->endHook();
     keybd_event(VK_SNAPSHOT, MapVirtualKeyA(VK_SNAPSHOT, 0),0,0);
     hooker->startHook();
-}
-
-void MainClass::setTrayIcon()
-{
-    trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setIcon(QIcon(":/icons/icon.ico"));
-    trayIcon->show();
-    QMenu *trayMenu = new QMenu(this);
-    QAction *actAcc = new QAction(QIcon("://icons/icon.ico"), "Аккаунт",trayMenu);
-    QAction *actScreen = new QAction(QIcon("://icons/fullscreen.ico"), "Скрин",trayMenu);
-    QAction *actArea = new QAction(QIcon("://icons/area.ico"), "Скрин области",trayMenu);
-    QAction *actOpen = new QAction(QIcon("://icons/settings.ico"), "Настройки",trayMenu);
-    QAction *actExit = new QAction(QIcon("://icons/exit.ico"), "Выход",trayMenu);
-
-    trayMenu->addAction(actAcc);
-    trayMenu->addSeparator();
-    trayMenu->addAction(actScreen);
-    trayMenu->addAction(actArea);
-    trayMenu->addSeparator();
-    trayMenu->addAction(actOpen);
-    trayMenu->addAction(actExit);
-    trayIcon->setContextMenu(trayMenu);
-
-    connect(actAcc, SIGNAL(triggered()), this, SLOT(getSecureKey()));
-    connect(actScreen, SIGNAL(triggered()), this, SLOT(screen()));
-    connect(actArea, SIGNAL(triggered()), this, SLOT(screenArea()));
-    connect(actOpen, SIGNAL(triggered()), this, SLOT(show()));
-    connect(actExit, SIGNAL(triggered()), qApp, SLOT(quit()));
-    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayActivate(QSystemTrayIcon::ActivationReason)));
 }
 
 void MainClass::setIconImage(QString icon)
@@ -114,6 +78,67 @@ void MainClass::warning(QString message)
     QPixmap warning(":/img/icons/warning.png");
     errorBox.setIconPixmap(warning);
     errorBox.exec();
+}
+
+void MainClass::uiSetup()
+{
+    ui->setupUi(this);
+    this->setFixedSize(this->size());
+    ui->accountGroup->setVisible(false);
+    //ui->updateBar->setVisible(false);
+    ui->aboutLabel->setText("ScreIk. Версия "+GLOBAL::version+" \n\nАвтор: NikDiamond \n\nhttp://nikd.tk/");
+    //Set ScreIk logo in "about"
+    QPixmap pix(":/img/icons/logo.png");
+    ui->logoLB->setPixmap(pix);
+    setTrayIcon();//Setting tray menu
+}
+
+void MainClass::getRegistrySettings()
+{
+    QSettings settings;
+    if(settings.value("general/autorun", true).toBool())
+        setRegRun(true);
+    ui->autorunBox->setChecked(settings.value("general/autorun", true).toBool());
+    //quality box
+    ui->png->setChecked(settings.value("general/png", false).toBool());
+    //hotkeys
+    RegisterHotKey((HWND)winId(), 0, settings.value("hotkeys/fullscreen_mod", 0).toUInt(), settings.value("hotkeys/fullscreen_key", VK_SNAPSHOT).toUInt());//full
+    ui->keyhook_full->setText(modString(settings.value("hotkeys/fullscreen_mod", 0).toUInt()) + settings.value("hotkeys/fullscreen_text", "Print").toString());
+
+    RegisterHotKey((HWND)winId(), 1, settings.value("hotkeys/areascreen_mod", MOD_ALT).toUInt(), settings.value("hotkeys/areascreen_key", VK_SNAPSHOT).toUInt());//area
+    ui->keyhook_area->setText(modString(settings.value("hotkeys/areascreen_mod", MOD_ALT).toUInt()) + settings.value("hotkeys/areascreen_text", "Print").toString());
+
+    RegisterHotKey((HWND)winId(), 2, settings.value("hotkeys/wndscreen_mod", MOD_SHIFT).toUInt(), settings.value("hotkeys/wndscreen_key", VK_SNAPSHOT).toUInt());//area
+    ui->keyhook_wnd->setText(modString(settings.value("hotkeys/wndscreen_mod", MOD_SHIFT).toUInt()) + settings.value("hotkeys/wndscreen_text", "Print").toString());
+}
+
+void MainClass::setTrayIcon()
+{
+    trayIcon = new QSystemTrayIcon(this);
+    trayIcon->setIcon(QIcon(":/icons/icon.ico"));
+    trayIcon->show();
+    QMenu *trayMenu = new QMenu(this);
+    QAction *actAcc = new QAction(QIcon("://icons/icon.ico"), "Аккаунт",trayMenu);
+    QAction *actScreen = new QAction(QIcon("://icons/fullscreen.ico"), "Скрин",trayMenu);
+    QAction *actArea = new QAction(QIcon("://icons/area.ico"), "Скрин области",trayMenu);
+    QAction *actOpen = new QAction(QIcon("://icons/settings.ico"), "Настройки",trayMenu);
+    QAction *actExit = new QAction(QIcon("://icons/exit.ico"), "Выход",trayMenu);
+
+    trayMenu->addAction(actAcc);
+    trayMenu->addSeparator();
+    trayMenu->addAction(actScreen);
+    trayMenu->addAction(actArea);
+    trayMenu->addSeparator();
+    trayMenu->addAction(actOpen);
+    trayMenu->addAction(actExit);
+    trayIcon->setContextMenu(trayMenu);
+
+    connect(actAcc, SIGNAL(triggered()), this, SLOT(getSecureKey()));
+    connect(actScreen, SIGNAL(triggered()), this, SLOT(screen()));
+    connect(actArea, SIGNAL(triggered()), this, SLOT(screenArea()));
+    connect(actOpen, SIGNAL(triggered()), this, SLOT(show()));
+    connect(actExit, SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayActivate(QSystemTrayIcon::ActivationReason)));
 }
 
 void MainClass::auth(QString email, QString password)
@@ -236,7 +261,11 @@ void MainClass::updateProgress(qint64 dwn, qint64 total)
 
 void MainClass::updateFailed()
 {
-    warning("Ошибка подключения");
+    ui->update->setText("Обновить");
+    ui->update->setEnabled(true);
+    ui->updateBar->setVisible(false);
+
+    warning("Ошибка загрузки обновления");
     ui->updateBar->setVisible(false);
     ui->update->setText("Обновить");
     ui->update->setEnabled(true);
@@ -248,32 +277,33 @@ void MainClass::updateLoaded(QString path)
     ui->update->setText("Обновить");
     ui->update->setEnabled(true);
     QFileInfo info(path);
-    if(QFile::exists(info.path()+"\\ScreIkUpdate.exe")) QFile::remove(info.path()+"\\ScreIkUpdate.exe");
-    if(QFile::rename(info.absoluteFilePath(), info.path()+"\\ScreIkUpdate.exe")){
-        QTime time;
-        time.start();
-        for(;time.elapsed() < 1000;)
-        {}
+    if(QFile::exists(info.path()+"\\ScreIkUpdate.sc")) QFile::remove(info.path()+"\\ScreIkUpdate.sc");
+    if(QFile::rename(info.absoluteFilePath(), info.path()+"\\ScreIkUpdate.sc")){
+        //Now here is 2 files: screik.exe and screikupdate.sc
+        //we must close screik.exe, then delete it and renamescreikupdate.exe to screik.exe
+        //by console or smth else
         QProcess *process = new QProcess(this);
-        if(process->startDetached("\""+info.path()+"\\ScreIkUpdater.exe\""))
-            qApp->exit(0);
+        QString appPath = QCoreApplication::applicationFilePath();
+            appPath.replace("/", "\\");
+        QString updatePath = info.path()+"\\ScreIkUpdate.sc";
+            updatePath.replace("/", "\\");
+        process->startDetached("cmd.exe /K ECHO \"************UPDATING SCREIK************\" & TIMEOUT 1 & DEL \""+appPath+"\" & RENAME \""+updatePath+"\" \"ScreIk.exe\" & start \""+appPath+"\" & EXIT");
+        qApp->quit();
     }
 }
 
 void MainClass::setRegRun(bool state)
 {
+    #ifdef Q_OS_WIN32
     if(state){
-        #ifdef Q_OS_WIN32
         QSettings autorun("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
         autorun.setValue("ScreIk",QCoreApplication::applicationFilePath().replace("/","\\"));
         autorun.sync();
-        #endif
     }else{
-        #ifdef Q_OS_WIN32
         QSettings autorun("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
         autorun.remove("ScreIk");
-        #endif
     }
+    #endif
 }
 
 bool MainClass::nativeEvent(const QByteArray &eventType, void *message, long *result)
@@ -384,25 +414,6 @@ QString MainClass::modString(int modId)
     default:
         return "";
     }
-}
-
-void MainClass::startSettings()
-{
-    QSettings settings;
-    if(settings.value("general/autorun", true).toBool())
-        setRegRun(true);
-    ui->autorunBox->setChecked(settings.value("general/autorun", true).toBool());
-    //quality box
-    ui->png->setChecked(settings.value("general/png", false).toBool());
-    //hotkeys
-    RegisterHotKey((HWND)winId(), 0, settings.value("hotkeys/fullscreen_mod", 0).toUInt(), settings.value("hotkeys/fullscreen_key", VK_SNAPSHOT).toUInt());//full
-    ui->keyhook_full->setText(modString(settings.value("hotkeys/fullscreen_mod", 0).toUInt()) + settings.value("hotkeys/fullscreen_text", "Print").toString());
-
-    RegisterHotKey((HWND)winId(), 1, settings.value("hotkeys/areascreen_mod", MOD_ALT).toUInt(), settings.value("hotkeys/areascreen_key", VK_SNAPSHOT).toUInt());//area
-    ui->keyhook_area->setText(modString(settings.value("hotkeys/areascreen_mod", MOD_ALT).toUInt()) + settings.value("hotkeys/areascreen_text", "Print").toString());
-
-    RegisterHotKey((HWND)winId(), 2, settings.value("hotkeys/wndscreen_mod", MOD_SHIFT).toUInt(), settings.value("hotkeys/wndscreen_key", VK_SNAPSHOT).toUInt());//area
-    ui->keyhook_wnd->setText(modString(settings.value("hotkeys/wndscreen_mod", MOD_SHIFT).toUInt()) + settings.value("hotkeys/wndscreen_text", "Print").toString());
 }
 
 void MainClass::uploadProgress(qint64 bytes, qint64 total)

@@ -1,3 +1,4 @@
-<center><h1>403 Forbidden!</h1></center><br>
-<hr>
-<center>ScreIk | by NikDiamond</center>
+<?php
+header('HTTP/1.0 403 Forbidden');
+?>
+403 forbidden

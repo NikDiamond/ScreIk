@@ -39,8 +39,6 @@ public:
     explicit MainClass(QWidget *parent = 0);
     ~MainClass();
     QString modString(int modId);
-    void startSettings();
-    void setTrayIcon();
     void setIconImage(QString icon);
     void createXMLFile();
     QString passHash(QString pass);
@@ -88,6 +86,10 @@ private slots:
 public slots:
     static void warning(QString message);
 private:
+    void uiSetup();
+    void getRegistrySettings();
+    void setTrayIcon();
+
     Ui::MainClass *ui;
     QSystemTrayIcon *trayIcon;
     AreaScreen *areaScreener;

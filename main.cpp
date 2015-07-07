@@ -1,20 +1,17 @@
 #include "mainclass.h"
-#include <windows.h>
+#include "global.h"
+
 #include <QApplication>
-#include <QApplication>
-#include <QCoreApplication>
-#include <QDebug>
-#include <QFile>
-#include <QDir>
-#include <QProcess>
-#include <QMessageBox>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
     a.setQuitOnLastWindowClosed(false);
-    QCoreApplication::setOrganizationName(QObject::tr("NikDiamond"));
     QCoreApplication::setApplicationName(QObject::tr("ScreIk"));
+    QCoreApplication::setApplicationVersion(GLOBAL::version);
+    QCoreApplication::setOrganizationName(QObject::tr("NikD Projects"));
+    QCoreApplication::setOrganizationDomain("nikd.tk");
 
     MainClass w;
     w.setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint);

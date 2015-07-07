@@ -50,6 +50,12 @@ void App::results()
 {
     QString result = reply->readAll();
     reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        qDebug() << reply->errorString();
+        emit error(reply->errorString());
+        this->deleteLater();
+        return;
+    }
 
     if(GLOBAL::debugging) qDebug() << "result: " + result;
     if(!isError(result)){
@@ -68,6 +74,14 @@ void App::results()
 void App::downloaded()
 {
     data = reply->readAll();
+    reply->deleteLater();
+    if (reply->error() != QNetworkReply::NoError) {
+        qDebug() << reply->errorString();
+        emit error(reply->errorString());
+        this->deleteLater();
+        return;
+    }
+
     if(GLOBAL::debugging)
         qDebug() << "Download complete | " + act;
 
@@ -83,7 +97,6 @@ void App::downloaded()
     if(GLOBAL::debugging)
         qDebug() << "File moved | " + path + "\\" + fileName;
 
-    reply->deleteLater();
     emit finished(path+"\\"+fileName);
     this->deleteLater();
 }
@@ -97,5 +110,9 @@ void App::error(QNetworkReply::NetworkError error)
 {
     emit failed("Ошибка подключения " + error);
     emit failed();
+}
+void App::error(QString error)
+{
+    emit failed("Ошибка " + error);
 }
 
