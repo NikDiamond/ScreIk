@@ -16,6 +16,8 @@
 #include <QSettings>
 #include <QDateTime>
 #include <QTime>
+#include <QtOpenGL/QGLWidget>
+#include <QtWinExtras/QtWin>
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>

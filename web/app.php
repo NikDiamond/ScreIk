@@ -49,6 +49,34 @@ switch($act){
 			if($i != $num) echo '|';
 		}
 	break;
+	case "deleteScreen":
+		$email = $_POST['email'];
+		$password = $_POST['password'];
+		$name = $_POST['name'];
+		
+		$query = $mysqli->query("SELECT * FROM `users` WHERE `email` = '$email' AND `password` = '$password'");
+		$res = mysqli_fetch_array($query);
+		if(empty($res)) die('error | hidden');
+		
+		$query = $mysqli->query("SELECT * FROM `screenshots` WHERE `name` = '".$name."' AND `userId` = ".$res["id"]);
+		if($query){
+			$res = mysqli_fetch_array($query);
+			if(!empty($res['id'])){
+				$remQ = $mysqli->query("DELETE FROM `screenshots` WHERE `id` = ".$res['id']);
+				if($remQ){
+					if(unlink("l/".$res['name']) && unlink("l/m/".substr($res['name'], 0, -4).'.jpg')){
+						die("success");
+					}
+				}else{
+					die("error | Ошибка удаления");
+				}
+			}else{
+				die("error | Этот скриншот уже удалён");
+			}
+		}else{
+			die('error | Ошибка удаления');
+		}
+	break;
 	default:
 		die('error | hidden');
 	break;

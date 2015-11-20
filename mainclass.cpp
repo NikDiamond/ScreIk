@@ -7,6 +7,7 @@ MainClass::MainClass(QWidget *parent) :
     ui(new Ui::MainClass),
     areaBusy(false)
 {
+    historyLength = 3;
     authOnStartUp();
     uiSetup();//Setting up ui
     getRegistrySettings();//Setting ui by settings in registry
@@ -50,9 +51,7 @@ void MainClass::toAuth()
 {
     if(!this->isVisible())
         this->show();
-    ui->tabWidget->setCurrentIndex(1);
     this->setFocus();
-    authGui(true);
 }
 
 QString MainClass::passHash(QString pass)
@@ -90,7 +89,7 @@ void MainClass::uiSetup()
     //Set ScreIk logo in "about"
     QPixmap pix(":/img/icons/logo.png");
     ui->logoLB->setPixmap(pix);
-    setTrayIcon();//Setting tray menu
+    setTrayIcon();
 }
 
 void MainClass::getRegistrySettings()
@@ -108,7 +107,7 @@ void MainClass::getRegistrySettings()
     RegisterHotKey((HWND)winId(), 1, settings.value("hotkeys/areascreen_mod", MOD_ALT).toUInt(), settings.value("hotkeys/areascreen_key", VK_SNAPSHOT).toUInt());//area
     ui->keyhook_area->setText(modString(settings.value("hotkeys/areascreen_mod", MOD_ALT).toUInt()) + settings.value("hotkeys/areascreen_text", "Print").toString());
 
-    RegisterHotKey((HWND)winId(), 2, settings.value("hotkeys/wndscreen_mod", MOD_SHIFT).toUInt(), settings.value("hotkeys/wndscreen_key", VK_SNAPSHOT).toUInt());//area
+    RegisterHotKey((HWND)winId(), 2, settings.value("hotkeys/wndscreen_mod", MOD_SHIFT).toUInt(), settings.value("hotkeys/wndscreen_key", VK_SNAPSHOT).toUInt());//window
     ui->keyhook_wnd->setText(modString(settings.value("hotkeys/wndscreen_mod", MOD_SHIFT).toUInt()) + settings.value("hotkeys/wndscreen_text", "Print").toString());
 }
 
@@ -117,14 +116,62 @@ void MainClass::setTrayIcon()
     trayIcon = new QSystemTrayIcon(this);
     trayIcon->setIcon(QIcon(":/icons/icon.ico"));
     trayIcon->show();
-    QMenu *trayMenu = new QMenu(this);
-    QAction *actAcc = new QAction(QIcon("://icons/icon.ico"), "Аккаунт",trayMenu);
+    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayActivate(QSystemTrayIcon::ActivationReason)));
+    setTrayMenu();
+}
+
+void MainClass::setTrayMenu()
+{
+    trayMenu = new QMenu(this);
+    QAction *actAcc = new QAction(QIcon("://icons/icon.ico"), "Открыть скриншоты",trayMenu);
     QAction *actScreen = new QAction(QIcon("://icons/fullscreen.ico"), "Скрин",trayMenu);
     QAction *actArea = new QAction(QIcon("://icons/area.ico"), "Скрин области",trayMenu);
     QAction *actOpen = new QAction(QIcon("://icons/settings.ico"), "Настройки",trayMenu);
     QAction *actExit = new QAction(QIcon("://icons/exit.ico"), "Выход",trayMenu);
 
     trayMenu->addAction(actAcc);
+    trayMenu->addSeparator();
+    //add screens
+    //copy link mapper
+    QSignalMapper * linkMapper = new QSignalMapper(this);
+    QObject::connect(linkMapper,SIGNAL(mapped(QString)),this,SLOT(copyLinkToClp(QString)));
+    //delete mapper
+    QSignalMapper * delMapper = new QSignalMapper(this);
+    QObject::connect(delMapper,SIGNAL(mapped(QString)),this,SLOT(deleteScreen(QString)));
+    //open mapper
+    QSignalMapper * openMapper = new QSignalMapper(this);
+    QObject::connect(openMapper,SIGNAL(mapped(QString)),this,SLOT(openScreen(QString)));
+    if(!storyList.isEmpty()){
+        for(int i = 0; i < historyLength; i++){
+            QAction *action = new QAction(storyList["dates"][i], trayMenu);
+            trayMenu->addAction(action);
+            QMenu *screenMenu = new QMenu(this);
+            //submenu
+            //image
+            QAction *labelAct = new QAction(screenMenu);
+            labelAct->setIcon(QIcon("://icons/fullscreen.ico"));
+            screenMenu->addAction(labelAct);
+            //open
+            QAction *open = new QAction(QIcon("://icons/exit.ico"), "Открыть в браузере", this);
+            screenMenu->addAction(open);
+            openMapper->setMapping(open, storyList["names"][i]);
+            connect(open, SIGNAL(triggered()), openMapper, SLOT(map()));
+            //copy link
+            QAction *link = new QAction("Копировать ссылку в буфер обмена", this);
+            screenMenu->addAction(link);
+            linkMapper->setMapping(link, storyList["names"][i]);
+            connect(link, SIGNAL(triggered()), linkMapper, SLOT(map()));
+            //
+            screenMenu->addSeparator();
+            //delete
+            QAction *del = new QAction("Удалить", this);
+            screenMenu->addAction(del);
+            delMapper->setMapping(del, storyList["names"][i]);
+            connect(del, SIGNAL(triggered()), delMapper, SLOT(map()));
+
+            action->setMenu(screenMenu);
+        }
+    }
     trayMenu->addSeparator();
     trayMenu->addAction(actScreen);
     trayMenu->addAction(actArea);
@@ -138,7 +185,31 @@ void MainClass::setTrayIcon()
     connect(actArea, SIGNAL(triggered()), this, SLOT(screenArea()));
     connect(actOpen, SIGNAL(triggered()), this, SLOT(show()));
     connect(actExit, SIGNAL(triggered()), qApp, SLOT(quit()));
-    connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayActivate(QSystemTrayIcon::ActivationReason)));
+}
+
+void MainClass::copyLinkToClp(QString text)
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setText("http://"+GLOBAL::domain+"/l/"+text);
+}
+
+void MainClass::deleteScreen(QString name)
+{
+    qDebug() << "deleting "+name;
+    App *app = new App("deleteScreen", "email="+_email+"&password="+_password+"&name="+name.simplified());
+    app->query();
+    connect(app, SIGNAL(finished()), this, SLOT(screenDeleted()));
+}
+
+void MainClass::screenDeleted()
+{
+    qDebug() << "deleted";
+    storyFill();
+}
+
+void MainClass::openScreen(QString name)
+{
+    QDesktopServices::openUrl(QUrl("http://"+GLOBAL::domain+"/l/"+name));
 }
 
 void MainClass::auth(QString email, QString password)
@@ -184,8 +255,7 @@ void MainClass::authOnStartUp()
 
 void MainClass::storyFill()
 {
-    int length = 3;
-    App *app = new App("getStory", "email="+_email+"&password="+_password+"&length="+length);
+    App *app = new App("getStory", "email="+_email+"&password="+_password+"&length="+historyLength);
     app->query();
     connect(app, SIGNAL(finished(QString)), this, SLOT(storyLoaded(QString)));
 }
@@ -194,6 +264,7 @@ void MainClass::storyLoaded(QString story)
 {
     story = story.simplified();
     QStringList screens = story.split('|');
+    storyList.clear();
     for(int i = 0; i < screens.length(); i++){
         storyList["names"].insert(i, screens[i].split('/')[0]);
         storyList["dates"].insert(i, screens[i].split('/')[1]);
@@ -209,6 +280,8 @@ void MainClass::storyUpdate()
         buttons[i]->setText(storyList["dates"][i]);
         buttons[i]->setEnabled(true);
     }
+    trayMenu->clear();
+    setTrayMenu();
 }
 
 void MainClass::updateCheck()

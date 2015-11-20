@@ -10,8 +10,12 @@
 
 #include <QMainWindow>
 #include <QSystemTrayIcon>
+#include <QEventLoop>
+#include <QClipboard>
+#include <QWidgetAction>
 #include <QDebug>
 #include <QMenu>
+#include <QLabel>
 #include <QAction>
 #include <QSettings>
 #include <QPixmap>
@@ -54,9 +58,11 @@ protected:
     bool nativeEvent(const QByteArray &eventType, void *message, long *result);
 private slots:
     void trayActivate(QSystemTrayIcon::ActivationReason r);
+
     void screen(int x = 0, int y = 0, int w = -1, int h = -1);
     void screenArea();
     void screenWnd();
+
     void uploadProgress(qint64 bytes, qint64 total);
     void uploadFinished(QString link, QString date);
     void authCheck();
@@ -72,6 +78,12 @@ private slots:
     void emitPress(HookKeyboard::HookKey key);
     void storyLoaded(QString story);
     void updateStart(QString data);
+    void setTrayIcon();
+    void setTrayMenu();
+    void copyLinkToClp(QString text);
+    void deleteScreen(QString name);
+    void screenDeleted();
+    void openScreen(QString name);
 
     void on_signup_clicked();
     void on_login_clicked();
@@ -88,12 +100,13 @@ public slots:
 private:
     void uiSetup();
     void getRegistrySettings();
-    void setTrayIcon();
 
     Ui::MainClass *ui;
     QSystemTrayIcon *trayIcon;
+    QMenu *trayMenu;
     AreaScreen *areaScreener;
     bool areaBusy;
+    int historyLength;
     QString lastLink;
     QString _email;
     QString _password;

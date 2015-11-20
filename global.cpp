@@ -8,6 +8,6 @@ bool GLOBAL::debugging  = true;
 
 QString GLOBAL::domain    = "screik.tk";
 QString GLOBAL::userAgent = "ScreIk";
-QString GLOBAL::version   = "0.9b";
+QString GLOBAL::version   = "0.9.2b";
 
 GLOBAL::GLOBAL(QObject *parent):QObject(parent){}

@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ScreIk"
-#define MyAppVersion "0.9b"
+#define MyAppVersion "0.9.2b"
 #define MyAppPublisher "NikD"
 #define MyAppURL "http://screik.tk/"
 #define MyAppExeName "ScreIk.exe"
@@ -33,7 +33,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "D:\Files\Projects\Qt\build-ScreIk-Desktop_Qt_5_4_1_MinGW_32bit_Static-Debug\release\ScreIk.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Files\Projects\Qt\build-ScreIk-Desktop_Qt_5_5_0_MinGW_32bit_STATIC-Release\release\ScreIk.exe"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

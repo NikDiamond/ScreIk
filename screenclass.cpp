@@ -3,7 +3,6 @@
 ScreenClass::ScreenClass(QObject *parent) :
     QObject(parent)
 {}
-
 void ScreenClass::doScreen(QString email, QString pass, int x, int y, int w, int h)
 {
     QScreen *screen = QGuiApplication::primaryScreen();
