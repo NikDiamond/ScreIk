@@ -28,7 +28,7 @@ class ScreenClass : public QObject
     Q_OBJECT
 public:
     explicit ScreenClass(QObject *parent = 0);
-    void doScreen(QString email, QString pass, int x = 0, int y = 0, int w = -1, int h = -1);
+    void doScreen(QString email, QString pass, int x = 0, int y = 0, int w = -1, int h = -1, QString path="", int saveType=2);
     ~ScreenClass();
 private slots:
     void uploadProgress(qint64 bytes,qint64 total);
@@ -36,9 +36,14 @@ private slots:
 private:
     QNetworkAccessManager manager;
     QNetworkReply *reply;
+    QPixmap mainPix;
+    QString date();
+    bool isError(QString message);
+    int _status;
 signals:
     void progress(qint64, qint64);
     void finished(QString, QString);
+    void finished(QPixmap);
 };
 
 #endif // SCREENCLASS_H

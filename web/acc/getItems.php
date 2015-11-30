@@ -22,7 +22,8 @@
 			$path = '/l/m/'.substr($res['name'], 0, -4).'.jpg';
 			echo '<div class="itemWrap" id="'.$res['id'].'">';
 				echo '<div class="itemTop" id="itemTop-'.$res['id'].'">';
-					echo '<a class="itemRemove" id="itemRemove-'.$res['id'].'" title="Удалить" href="javascript://" onClick="removeScreen('.$res['id'].');"></a>';
+					echo '<a class="itemRemove" id="itemRemove-'.$res['id'].'" title="Удалить" href="javascript://" onClick="removeScreen('.$res['id'].');"></a>';//delete button
+					
 					echo (integer)(filesize("../l/".$res['name'])/1024) . ' KB';
 				echo '</div>';
 			echo '<a target="_blank" href="/l/'.$res['name'].'" class="accountUploadItem">';
@@ -35,7 +36,7 @@
 			}else if(file_exists('../'.substr($path, 0, -4).'.png')){
 				echo '<img src="'.substr($path, 0, -4).'.png">';
 			}else{
-				echo '<img src="/css/img/oldVersion.png">';
+				echo 'error';
 			}
 			echo '</a>';
 			echo '</div>';

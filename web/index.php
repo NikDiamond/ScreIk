@@ -14,6 +14,8 @@ $core->startAuth();
 	<meta name="title" content="SceIk" />
 	<meta name="description" content="Программа для удобного и быстрого создания скриншотов - ScreIk">
 	<link rel="image_src" href="img/icon.png" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
 	<meta name="Keywords" content="ScreIk NikDiamond Screenshoot fast скрин создать скрин быстро скриншот заскринить снимок экрана быстрый скриншот программа удобно легко просто">
 	<meta name="revisit-after" content="1 day">
 	<meta name="AUTHOR" content="NikDiamond, Dmitry Bardyshev">
@@ -26,6 +28,7 @@ $core->startAuth();
 	<meta name="twitter:image:src" content="http://screik.tk/css/img/icon.png">
 	
 	<link rel="stylesheet" href="/css/style.css">
+	
 	<link rel="icon" href="/css/img/icon.ico" type="image/x-icon">
 	<title>ScreIk <?=(!empty($_GET['p']) ? " - ".ucfirst($_GET['p']) : "")?></title>
 	<script src="/js/jquery-1.11.1.min.js" type="text/javascript"></script>

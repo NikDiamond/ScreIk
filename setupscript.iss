@@ -2,16 +2,16 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ScreIk"
-#define MyAppVersion "0.9.2b"
-#define MyAppPublisher "NikD"
-#define MyAppURL "http://screik.tk/"
+#define MyAppVersion "0.9.7b"
+#define MyAppPublisher "NikDiamond"
+#define MyAppURL "http://www.screik.tk/"
 #define MyAppExeName "ScreIk.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{7BF38B7F-A114-4FC1-98C6-1024C63EB600}
+AppId={{4522B036-DBF6-4375-A137-C12FE1A7B784}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -21,7 +21,10 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
-OutputBaseFilename=setup
+AllowNoIcons=yes
+OutputDir=D:\Files\GitHub\ScreIk\Output
+OutputBaseFilename=ScreIk 0.9.7b
+SetupIconFile=D:\Files\GitHub\ScreIk\icon.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -33,11 +36,12 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "D:\Files\Projects\Qt\build-ScreIk-Desktop_Qt_5_5_0_MinGW_32bit_STATIC-Release\release\ScreIk.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Files\GitHub\build-ScreIk-Desktop_Qt_5_5_1_MinGW_STATIC_32bit-Release\release\ScreIk.exe"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
+Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon

@@ -54,6 +54,10 @@ function changeSort() {
 	setCookie('sort', newSort, {expires: 30758400, path: '/'});
 	location.reload();
 }
+function calendar() {
+	document.getElementById('calendar').focus();
+	$(this).siblings('[type="date"]').removeClass('hidden').focus().click();
+}
 function removeScreen(id){
 	$('#itemRemove-'+id).animateRotate(360, 400);
 	$.ajax({

@@ -43,6 +43,7 @@ switch($act){
 		$query = $mysqli->query("SELECT * FROM `screenshots` WHERE `userId` = '$id' ORDER BY `id` DESC LIMIT 3");
 		if(!$query) die('error | hidden');
 		$num = mysqli_num_rows($query);
+		if($num == 0) die('empty');
 		for($i=1;$i<=$num;$i++){
 			$res = mysqli_fetch_array($query);
 			echo $res['name'].'/'.$res['date'];
@@ -68,13 +69,13 @@ switch($act){
 						die("success");
 					}
 				}else{
-					die("error | Ошибка удаления");
+					die("error | hidden");
 				}
 			}else{
 				die("error | Этот скриншот уже удалён");
 			}
 		}else{
-			die('error | Ошибка удаления');
+			die('error | 3');
 		}
 	break;
 	default:

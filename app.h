@@ -19,7 +19,7 @@ class App : public QObject
 {
     Q_OBJECT
 public:
-    explicit App(QString act, QString POST = "", QObject *parent = 0);
+    explicit App(QString act, QString POST = "", bool showErrors = true, QObject *parent = 0);
     void query();
     void download();
     bool isError(QString message);
@@ -32,6 +32,14 @@ private:
     QString act;
     QString POST;
     QString errorStr;
+
+    int _status;
+    bool showErrors;
+    int retryCount;
+    int delaySecs;
+
+    void retry();
+    void delay(int secs);
 private slots:
     void results();
     void downloaded();

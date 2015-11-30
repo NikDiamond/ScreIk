@@ -10,5 +10,6 @@
         <file>icons/fullscreen.ico</file>
         <file>icons/settings.ico</file>
         <file>icons/area.ico</file>
+        <file>icons/icon-wait.ico</file>
     </qresource>
 </RCC>

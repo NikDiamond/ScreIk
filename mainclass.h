@@ -16,6 +16,7 @@
 #include <QDebug>
 #include <QMenu>
 #include <QLabel>
+#include <QFileDialog>
 #include <QAction>
 #include <QSettings>
 #include <QPixmap>
@@ -65,6 +66,7 @@ private slots:
 
     void uploadProgress(qint64 bytes, qint64 total);
     void uploadFinished(QString link, QString date);
+    void uploadFinished(QPixmap pix);
     void authCheck();
     void toAuth();
     void getSecureKey();
@@ -78,6 +80,7 @@ private slots:
     void emitPress(HookKeyboard::HookKey key);
     void storyLoaded(QString story);
     void updateStart(QString data);
+    void finishUpdate();
     void setTrayIcon();
     void setTrayMenu();
     void copyLinkToClp(QString text);
@@ -95,6 +98,11 @@ private slots:
     void on_story2_clicked();
     void on_story3_clicked();
     void on_update_clicked();
+    void on_pathButton_clicked();
+    void on_l_1_toggled(bool checked);
+    void on_l_2_toggled(bool checked);
+    void on_l_3_toggled(bool checked);
+
 public slots:
     static void warning(QString message);
 private:
@@ -106,12 +114,15 @@ private:
     QMenu *trayMenu;
     AreaScreen *areaScreener;
     bool areaBusy;
+    bool updateChecked;
     int historyLength;
+    int saveType;
     QString lastLink;
     QString _email;
     QString _password;
     HookKeyboard *hooker;
     QMap<QString, QStringList> storyList;
+    WINBOOL IsElevated();
 };
 
 #endif // MAINCLASS_H

@@ -86,7 +86,7 @@ void KeyHooker::keyReleaseEvent(QKeyEvent *event)
         break;
     default:
         RegisterHotKey(GLOBAL::mainId, this->keyId, mods, event->nativeVirtualKey());
-        qDebug() << mods;
+        if(GLOBAL::debugging) qDebug() << mods;
         QSettings settings;
         settings.setValue("hotkeys/"+keyName(this->keyId)+"_mod", mods);
         settings.setValue("hotkeys/"+keyName(this->keyId)+"_key", event->nativeVirtualKey());

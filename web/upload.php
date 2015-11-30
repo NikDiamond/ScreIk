@@ -3,10 +3,10 @@ include("connect.php");
 //authorize check
 $email = $_GET['email'];
 $passHash = $_GET['passHash'];
-$query = $mysqli->query("SELECT * FROM `users` WHERE `email`='$email' AND `password`='$passHash'") or die("sqlError");
+$query = $mysqli->query("SELECT * FROM `users` WHERE `email`='$email' AND `password`='$passHash'") or die("error | sqlError");
 $res = mysqli_fetch_array($query);
 if(empty($res['id']))
-	die('badLogin');
+	die('error | BadLogin');
 	
 $uploadDir = 'l/';
 $minDir = $uploadDir.'m/';
@@ -22,7 +22,7 @@ switch($ext){
 		$ext = "jpg";
 	break;
 	default:
-		die("wrongFile");
+		die("error | wrongFile");
 	break;
 }
 //get new file random name

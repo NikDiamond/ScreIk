@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>315</width>
-    <height>161</height>
+    <width>314</width>
+    <height>313</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -74,6 +74,11 @@ QPushButton{
 QPushButton:hover{
 	background-image: url(:/img/icons/tpbg.png);
 }
+QPushButton:disabled{
+	background: #bbb;
+	border: none;
+	opacity: .7;
+}
 QLineEdit{
 	background: transparent;
 	border: 2px solid #fff;
@@ -100,7 +105,7 @@ QGroupBox{
       <x>0</x>
       <y>0</y>
       <width>315</width>
-      <height>161</height>
+      <height>491</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -150,8 +155,8 @@ QTabWidget::pane {
        <rect>
         <x>-1</x>
         <y>-1</y>
-        <width>311</width>
-        <height>131</height>
+        <width>317</width>
+        <height>287</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -179,45 +184,150 @@ QTabWidget::pane {
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_9">
+         <property name="spacing">
+          <number>6</number>
+         </property>
          <property name="topMargin">
           <number>0</number>
          </property>
          <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
+          <widget class="QGroupBox" name="groupBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="title">
             <string>Качество</string>
            </property>
+           <widget class="QWidget" name="verticalLayoutWidget_8">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>13</y>
+              <width>239</width>
+              <height>80</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_13">
+             <property name="spacing">
+              <number>4</number>
+             </property>
+             <item>
+              <widget class="QRadioButton" name="jpeg">
+               <property name="text">
+                <string>JPEG/PNG (умный выбор, рекомендуется)</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="png">
+               <property name="text">
+                <string>Только PNG (медленнее)</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </widget>
          </item>
          <item>
-          <widget class="QRadioButton" name="jpeg">
-           <property name="text">
-            <string>JPEG/PNG (умный выбор, рекомендуется)</string>
+          <widget class="QGroupBox" name="groupBox_2">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-           <property name="checked">
-            <bool>true</bool>
+           <property name="title">
+            <string>Сохрянять на диске: (TODO)</string>
            </property>
+           <widget class="QWidget" name="verticalLayoutWidget_9">
+            <property name="geometry">
+             <rect>
+              <x>0</x>
+              <y>20</y>
+              <width>238</width>
+              <height>80</height>
+             </rect>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_14">
+             <property name="spacing">
+              <number>4</number>
+             </property>
+             <item>
+              <widget class="QRadioButton" name="l_1">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>Всегда</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="l_2">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>Когда оффлайн</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="l_3">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>Никогда</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </widget>
          </item>
          <item>
-          <widget class="QRadioButton" name="png">
-           <property name="text">
-            <string>Только PNG (медленнее)</string>
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <property name="leftMargin">
+            <number>4</number>
            </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="verticalSpacer">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
+           <property name="topMargin">
+            <number>4</number>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>40</height>
-            </size>
+           <property name="rightMargin">
+            <number>4</number>
            </property>
-          </spacer>
+           <property name="bottomMargin">
+            <number>4</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label">
+             <property name="text">
+              <string>Схорянять в: </string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="pathEdit"/>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pathButton">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </item>
@@ -232,9 +342,9 @@ QTabWidget::pane {
       <property name="geometry">
        <rect>
         <x>-2</x>
-        <y>-2</y>
-        <width>311</width>
-        <height>217</height>
+        <y>4</y>
+        <width>317</width>
+        <height>282</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -430,6 +540,8 @@ QTabWidget::pane {
            </item>
           </layout>
          </widget>
+         <zorder>verticalLayoutWidget_2</zorder>
+         <zorder>accountGroup</zorder>
         </widget>
        </item>
        <item>
@@ -545,10 +657,40 @@ QTabWidget::pane {
            </item>
           </layout>
          </widget>
+         <zorder>verticalLayoutWidget_4</zorder>
+         <zorder>authGroup</zorder>
+         <zorder>authGroup</zorder>
         </widget>
        </item>
       </layout>
      </widget>
+     <widget class="QProgressBar" name="loginBar">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>314</width>
+        <height>4</height>
+       </rect>
+      </property>
+      <property name="maximum">
+       <number>1</number>
+      </property>
+      <property name="value">
+       <number>0</number>
+      </property>
+      <property name="textVisible">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <zorder>verticalLayoutWidget_3</zorder>
+     <zorder>accountGroup</zorder>
+     <zorder>accountGroup</zorder>
+     <zorder>accountGroup</zorder>
+     <zorder>loginBar</zorder>
     </widget>
     <widget class="QWidget" name="hotkeysTab">
      <attribute name="title">
@@ -559,8 +701,8 @@ QTabWidget::pane {
        <rect>
         <x>-1</x>
         <y>-1</y>
-        <width>311</width>
-        <height>134</height>
+        <width>316</width>
+        <height>287</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -704,8 +846,8 @@ QTabWidget::pane {
        <rect>
         <x>-1</x>
         <y>-1</y>
-        <width>311</width>
-        <height>134</height>
+        <width>316</width>
+        <height>287</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -721,6 +863,19 @@ QTabWidget::pane {
        <property name="bottomMargin">
         <number>20</number>
        </property>
+       <item>
+        <spacer name="verticalSpacer_7">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item>
         <widget class="QLabel" name="label_2">
          <property name="sizePolicy">
@@ -764,6 +919,19 @@ QTabWidget::pane {
          </property>
         </widget>
        </item>
+       <item>
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -776,8 +944,8 @@ QTabWidget::pane {
        <rect>
         <x>-1</x>
         <y>-2</y>
-        <width>311</width>
-        <height>131</height>
+        <width>316</width>
+        <height>288</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -793,6 +961,19 @@ QTabWidget::pane {
        <property name="bottomMargin">
         <number>5</number>
        </property>
+       <item>
+        <spacer name="verticalSpacer_9">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <property name="leftMargin">
@@ -849,14 +1030,7 @@ QTabWidget::pane {
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="aboutLabel">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_6">
+            <spacer name="verticalSpacer_10">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
              </property>
@@ -867,6 +1041,13 @@ QTabWidget::pane {
               </size>
              </property>
             </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="aboutLabel">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
            </item>
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -911,6 +1092,19 @@ QTabWidget::pane {
                </property>
               </widget>
              </item>
+             <item>
+              <spacer name="verticalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
             </layout>
            </item>
           </layout>
@@ -929,6 +1123,19 @@ QTabWidget::pane {
           </spacer>
          </item>
         </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_8">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
        </item>
       </layout>
      </widget>

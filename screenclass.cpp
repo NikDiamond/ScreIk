@@ -3,10 +3,13 @@
 ScreenClass::ScreenClass(QObject *parent) :
     QObject(parent)
 {}
-void ScreenClass::doScreen(QString email, QString pass, int x, int y, int w, int h)
+void ScreenClass::doScreen(QString email, QString pass, int x, int y, int w, int h, QString path, int saveType)
 {
     QScreen *screen = QGuiApplication::primaryScreen();
-    qDebug() << "[" << QTime::currentTime().toString() << "] Screening...";
+    QDateTime nw = QDateTime::currentDateTime();
+    QString datetime = nw.toString("yyyy-MM-dd hh:mm:ss");
+
+    if(GLOBAL::debugging) qDebug() << "[" << QTime::currentTime().toString() << "] Screening...";
     if(screen){
         QSettings settings;
         QString ext;
@@ -14,8 +17,12 @@ void ScreenClass::doScreen(QString email, QString pass, int x, int y, int w, int
         if(isPNG) ext = "png"; else ext = "jpg";
 
         srand(QDateTime::currentMSecsSinceEpoch());
-        QString fileName = QDir::tempPath()+"\\NikScreen"+QString::number(rand())+"."+ext;
+        QString fileName = QDir::tempPath()+"/ScreIk"+QString::number(rand())+"."+ext;
         QPixmap pixmap = screen->grabWindow(0, x, y, w, h);
+
+        mainPix = pixmap;
+        QClipboard *clip = QApplication::clipboard();
+        clip->setPixmap(mainPix);
 
         QString checkString = fileName;
         QString pngName = checkString.replace(QString(".jpg"), QString(".png"));
@@ -46,7 +53,8 @@ void ScreenClass::doScreen(QString email, QString pass, int x, int y, int w, int
                 delete remFile;
             }
         }
-        qDebug() << "File: " << fileName << ", q: " << GLOBAL::quality;
+        if(GLOBAL::debugging) qDebug() << "File: " << fileName << ", q: " << GLOBAL::quality;
+
         //POSTING FORM DATA
         QUrl url("http://"+GLOBAL::domain+"/upload.php?email="+email+"&passHash="+pass);
         QString bound="margin";
@@ -74,13 +82,23 @@ void ScreenClass::doScreen(QString email, QString pass, int x, int y, int w, int
             connect(reply, SIGNAL(uploadProgress(qint64,qint64)), SLOT(uploadProgress(qint64,qint64)));
             upFile->remove();
             upFile->close();
-            qDebug() << "[" << QTime::currentTime().toString() << "] File closed";
+            if(GLOBAL::debugging) qDebug() << "[" << QTime::currentTime().toString() << "] File closed";
         }
     }
 }
 ScreenClass::~ScreenClass()
 {
     delete reply;
+}
+bool ScreenClass::isError(QString message)
+{
+    if(_status != 200) return true;
+    if(message.length() != 16) return true;
+    QStringList msgSplit = message.split("|");
+    if(msgSplit[0].simplified() == "error")
+        return true;
+    else
+        return false;
 }
 
 void ScreenClass::uploadProgress(qint64 bytes, qint64 total)
@@ -91,12 +109,23 @@ void ScreenClass::uploadProgress(qint64 bytes, qint64 total)
 void ScreenClass::uploadFinished(QNetworkReply *reply)
 {
     QString rp = reply->readAll();
-    qDebug() << "Screen uploaded. [" << rp << "]";
-    QClipboard *clipboard = QApplication::clipboard();
-    clipboard->setText("http://"+GLOBAL::domain+"/l/"+rp);
+    if(GLOBAL::debugging) qDebug() << "Screen uploaded. [" << rp << "]";
 
-    QDateTime now = QDateTime::currentDateTime();
+    QVariant status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+    _status = status.toInt();
 
-    emit finished(rp, now.toString("yyyy-MM-dd hh:mm:ss"));
+    if(!isError(rp)){
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText("http://"+GLOBAL::domain+"/l/"+rp);
+        emit finished(rp, date());
+    }else{
+        emit finished(mainPix);
+    }
     deleteLater();
+}
+
+QString ScreenClass::date()
+{
+    QDateTime now = QDateTime::currentDateTime();
+    return now.toString("yyyy-MM-dd hh:mm:ss");
 }

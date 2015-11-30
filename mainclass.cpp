@@ -7,14 +7,11 @@ MainClass::MainClass(QWidget *parent) :
     ui(new Ui::MainClass),
     areaBusy(false)
 {
-    historyLength = 3;
-    authOnStartUp();
     uiSetup();//Setting up ui
+    finishUpdate();
+    historyLength = 0;
+    authOnStartUp();
     getRegistrySettings();//Setting ui by settings in registry
-
-    if(GLOBAL::authorized)
-        storyFill();
-    updateCheck();
 
     hooker = HookKeyboard::instance();
     hooker->startHook();
@@ -52,6 +49,7 @@ void MainClass::toAuth()
     if(!this->isVisible())
         this->show();
     this->setFocus();
+    authGui(true);
 }
 
 QString MainClass::passHash(QString pass)
@@ -100,6 +98,20 @@ void MainClass::getRegistrySettings()
     ui->autorunBox->setChecked(settings.value("general/autorun", true).toBool());
     //quality box
     ui->png->setChecked(settings.value("general/png", false).toBool());
+    //local path
+    ui->pathEdit->setText(settings.value("general/path", QCoreApplication::applicationDirPath()).toString());
+    saveType = settings.value("general/save", 2).toInt();
+    switch(saveType){
+    case 1:
+        ui->l_1->setChecked(true);
+        break;
+    case 2:
+        ui->l_2->setChecked(true);
+        break;
+    case 3:
+        ui->l_3->setChecked(true);
+        break;
+    }
     //hotkeys
     RegisterHotKey((HWND)winId(), 0, settings.value("hotkeys/fullscreen_mod", 0).toUInt(), settings.value("hotkeys/fullscreen_key", VK_SNAPSHOT).toUInt());//full
     ui->keyhook_full->setText(modString(settings.value("hotkeys/fullscreen_mod", 0).toUInt()) + settings.value("hotkeys/fullscreen_text", "Print").toString());
@@ -195,7 +207,7 @@ void MainClass::copyLinkToClp(QString text)
 
 void MainClass::deleteScreen(QString name)
 {
-    qDebug() << "deleting "+name;
+    if(GLOBAL::debugging) qDebug() << "deleting "+name;
     App *app = new App("deleteScreen", "email="+_email+"&password="+_password+"&name="+name.simplified());
     app->query();
     connect(app, SIGNAL(finished()), this, SLOT(screenDeleted()));
@@ -203,7 +215,7 @@ void MainClass::deleteScreen(QString name)
 
 void MainClass::screenDeleted()
 {
-    qDebug() << "deleted";
+    if(GLOBAL::debugging) qDebug() << "deleted";
     storyFill();
 }
 
@@ -214,6 +226,7 @@ void MainClass::openScreen(QString name)
 
 void MainClass::auth(QString email, QString password)
 {
+    if(GLOBAL::debugging) qDebug() << "Login with email "+email+" and password "+password;
     App *app = new App("login", "email="+email+"&password="+password);
     app->query();
     connect(app, SIGNAL(finished()), this, SLOT(authCheck()));
@@ -226,7 +239,7 @@ void MainClass::authCheck()
     ui->accountGroup->setVisible(true);
     ui->authGroup->setVisible(false);
 
-    if(ui->email->text() != ""){
+    if(ui->email->text() != "" && _email=="" && _password==""){
         _email = ui->email->text();
         _password = passHash(ui->password->text());
         QSettings settings;
@@ -235,7 +248,9 @@ void MainClass::authCheck()
         settings.sync();
     }
     ui->accountEmail->setText(_email);
+    ui->loginBar->setMaximum(1);
     authGui(true);
+    //next requests
     storyFill();
 }
 
@@ -247,7 +262,10 @@ void MainClass::authOnStartUp()
         _email = settings.value("auth/email").toString();
         _password = settings.value("auth/password").toString();
 
+        ui->email->setText(_email);
+
         auth(_email, _password);
+
     }else{
         toAuth();
     }
@@ -262,14 +280,19 @@ void MainClass::storyFill()
 
 void MainClass::storyLoaded(QString story)
 {
+    historyLength = 0;
     story = story.simplified();
-    QStringList screens = story.split('|');
-    storyList.clear();
-    for(int i = 0; i < screens.length(); i++){
-        storyList["names"].insert(i, screens[i].split('/')[0]);
-        storyList["dates"].insert(i, screens[i].split('/')[1]);
+    if(story != "empty"){
+        QStringList screens = story.split('|');
+        storyList.clear();
+        for(int i = 0; i < screens.length(); i++){
+            storyList["names"].insert(i, screens[i].split('/')[0]);
+            storyList["dates"].insert(i, screens[i].split('/')[1]);
+            historyLength++;
+        }
+        storyUpdate();//updating story list
     }
-    storyUpdate();
+    if(!updateChecked) updateCheck();//checking for updates
 }
 
 void MainClass::storyUpdate()
@@ -286,6 +309,7 @@ void MainClass::storyUpdate()
 
 void MainClass::updateCheck()
 {
+    updateChecked = true;
     ui->update->setText("Проверка...");
     ui->update->setEnabled(false);
 
@@ -299,17 +323,68 @@ void MainClass::updateCheck()
     connect(app, SIGNAL(failed()), this, SLOT(updateFailed()));
 }
 
+BOOL MainClass::IsElevated( ) {
+    BOOL fRet = FALSE;
+    HANDLE hToken = NULL;
+    if( OpenProcessToken( GetCurrentProcess( ),TOKEN_QUERY,&hToken ) ) {
+        TOKEN_ELEVATION Elevation;
+        DWORD cbSize = sizeof( TOKEN_ELEVATION );
+        if( GetTokenInformation( hToken, TokenElevation, &Elevation, sizeof( Elevation ), &cbSize ) ) {
+            fRet = Elevation.TokenIsElevated;
+        }
+    }
+    if( hToken ) {
+        CloseHandle( hToken );
+    }
+    return fRet;
+}
+
 void MainClass::updateStart(QString data)
 {
     QStringList updateData = data.split("|");
     QString version = updateData[0];
     QString link = updateData[1];
-    if(version != GLOBAL::version)
-        updateLoad(link);
-    else{
+    if(version != GLOBAL::version){//Updating
+        if(IsElevated()){
+            updateLoad(link);
+        }else{
+            //asking for update
+            QMessageBox askBox;
+            askBox.setStyleSheet("QMessageBox{background-image: url(:/img/icons/background.png);color: #ffffff;}QWidget{\n	color: #fff;\n	font: \"Roboto\";\n}\nQMenu{\n	color: #000;\n}\nQRadioButton:indicator{\n	background-image: url(:/img/icons/radio.png);\n	width: 20px;\n	height: 20px;\n}\nQRadioButton:indicator:hover{\n	background-image: url(:/img/icons/radio_hover.png);\n}\nQRadioButton:indicator:pressed{\n	background-image: url(:/img/icons/radio_pressed.png);\n}\nQRadioButton:indicator:checked{\n	background-image: url(:/img/icons/radio_checked.png);\n}\nQCheckBox:indicator{\n	background-image: url(:/img/icons/check.png);\n	width: 15px;\n	height: 15px;\n}\nQCheckBox:indicator:hover{\n	background-image: url(:/img/icons/check_hover.png);\n}\nQCheckBox:indicator:pressed{\n	background-image: url(:/img/icons/check_pressed.png);\n}\nQCheckBox:indicator:checked{\n	background-image: url(:/img/icons/check_checked.png);\n}\nQPushButton{\n	background: transparent;\n	border: 2px solid #fff;\n	padding: 4px;\n}\nQPushButton:hover{\n	background-image: url(:/img/icons/tpbg.png);\n}\nQLineEdit{\n	background: transparent;\n	border: 2px solid #fff;\n	padding: 2px;\n}");
+            askBox.setText("Доступно обновление.\nТекущая версия: "+GLOBAL::version+"\nНовая версия: "+version+"\n\nОбновить?");
+            askBox.setWindowTitle("Обновление");
+            askBox.setStandardButtons(QMessageBox::Yes);
+            askBox.addButton(QMessageBox::No);
+            askBox.setDefaultButton(QMessageBox::Yes);
+
+            if (askBox.exec() == QMessageBox::Yes){
+                //Reloading app with admin rights to update if needs
+                QString fileP = QCoreApplication::applicationFilePath();
+                QString doing = "runas";
+
+                int res = (int)ShellExecute(NULL, reinterpret_cast<const WCHAR*>(doing.utf16()), reinterpret_cast<const WCHAR*>(fileP.utf16()), NULL, NULL, SW_SHOWNORMAL);
+                qDebug() << res;
+                qApp->quit();
+            }else{
+                ui->update->setText("Обновить");
+                ui->update->setEnabled(true);
+                ui->updateBar->setVisible(false);
+                //Ставим флаг "не обновлять"
+            }
+        }
+    }else{
         ui->update->setText("Обновить");
         ui->update->setEnabled(true);
         ui->updateBar->setVisible(false);
+    }
+}
+
+void MainClass::finishUpdate()
+{
+    QString oldFile = QDir::currentPath()+"\\ScreIk.exe.old";
+    if(QFile::exists(oldFile)){
+        QFile::remove(oldFile);
+        if(GLOBAL::debugging) qDebug() << "Old file "+oldFile+" was removed";
     }
 }
 
@@ -355,13 +430,17 @@ void MainClass::updateLoaded(QString path)
         //Now here is 2 files: screik.exe and screikupdate.sc
         //we must close screik.exe, then delete it and renamescreikupdate.exe to screik.exe
         //by console or smth else
-        QProcess *process = new QProcess(this);
         QString appPath = QCoreApplication::applicationFilePath();
             appPath.replace("/", "\\");
         QString updatePath = info.path()+"\\ScreIkUpdate.sc";
             updatePath.replace("/", "\\");
-        process->startDetached("cmd.exe /K ECHO \"************UPDATING SCREIK************\" & TIMEOUT 1 & DEL \""+appPath+"\" & RENAME \""+updatePath+"\" \"ScreIk.exe\" & start \""+appPath+"\" & EXIT");
-        qApp->quit();
+
+        QFile::rename(appPath, info.path()+"\\ScreIk.exe.old");
+        if(QFile::rename(updatePath, info.path()+"\\ScreIk.exe")){
+            QProcess *updated = new QProcess(this);
+            updated->startDetached(info.path()+"\\ScreIk.exe", QStringList() << "");
+            qApp->quit();
+        }
     }
 }
 
@@ -413,15 +492,14 @@ void MainClass::trayActivate(QSystemTrayIcon::ActivationReason r)
 
 void MainClass::screen(int x, int y, int w, int h)
 {
-    if(GLOBAL::authorized){
-        ScreenClass *screener = new ScreenClass(this);
-        screener->doScreen(_email, _password, x, y, w, h);
+    ScreenClass *screener = new ScreenClass(this);
 
-        connect(screener, SIGNAL(progress(qint64,qint64)), this, SLOT(uploadProgress(qint64,qint64)));
-        connect(screener, SIGNAL(finished(QString, QString)), this, SLOT(uploadFinished(QString, QString)));
-    }else{
-        toAuth();
-    }
+    setIconImage(":/icons/icon-wait.ico");
+    screener->doScreen(_email, _password, x, y, w, h, ui->pathEdit->text(), saveType);
+
+    connect(screener, SIGNAL(progress(qint64,qint64)), this, SLOT(uploadProgress(qint64,qint64)));
+    connect(screener, SIGNAL(finished(QString, QString)), this, SLOT(uploadFinished(QString, QString)));
+    connect(screener, SIGNAL(finished(QPixmap)), this, SLOT(uploadFinished(QPixmap)));
 }
 
 void MainClass::screenArea()
@@ -434,7 +512,7 @@ void MainClass::screenArea()
     }else{
         //area screen
         if(!areaBusy){
-            qDebug() << "area";
+            if(GLOBAL::debugging) qDebug() << "area";
             areaBusy = true;
             areaScreener = new AreaScreen();
             connect(areaScreener, SIGNAL(completed(int,int,int,int)), this, SLOT(areaGot(int,int,int,int)));
@@ -501,12 +579,14 @@ void MainClass::uploadProgress(qint64 bytes, qint64 total)
             setIconImage(":/icons/icon60.ico");
         else if(percent <= 80)
             setIconImage(":/icons/icon80.ico");
-        else if(percent <= 100)
+        else if(percent < 100)
             setIconImage(":/icons/icon100.ico");
+        else if(percent == 100)
+            setIconImage(":/icons/icon-wait.ico");
     }
 }
 
-void MainClass::uploadFinished(QString link, QString date)
+void MainClass::uploadFinished(QString link, QString date)//finished uploading screen
 {
     lastLink = link;
     setIconImage(":/icons/icon.ico");
@@ -514,6 +594,11 @@ void MainClass::uploadFinished(QString link, QString date)
     QSound::play(":/snd/sound/complete.wav");
 
     //updating storyList
+    if(storyList["names"].length()<3){
+        storyList["names"].insert(storyList["names"].length(), "");
+        storyList["dates"].insert(storyList["names"].length(), "");
+        historyLength++;
+    }
     for(int i = storyList["names"].length()-1; i>0; i--){
         storyList["names"][i] = storyList["names"][i-1];
         storyList["dates"][i] = storyList["dates"][i-1];
@@ -521,6 +606,25 @@ void MainClass::uploadFinished(QString link, QString date)
     storyList["names"][0] = link;
     storyList["dates"][0] = date;
     storyUpdate();
+}
+
+void MainClass::uploadFinished(QPixmap pix)//finished local screen
+{
+    //save screenshot
+    QClipboard *clip = QApplication::clipboard();
+    clip->setPixmap(pix);
+    //show info
+    if(GLOBAL::debugging) qDebug() << "Local screen in clipboard";
+    QString mes;
+    if(!GLOBAL::authorized)
+        mes = "Вы не авторизованы.";
+    else
+        mes = "Ошибка подключения к серверу.";
+
+    mes += "\nСкриншот сохранён в буфер обмена";
+    trayIcon->showMessage("ScreIk", mes, QSystemTrayIcon::Information, 600);
+    QSound::play(":/snd/sound/complete.wav");
+    setIconImage(":/icons/icon.ico");
 }
 
 void MainClass::openScreen()
@@ -541,10 +645,10 @@ void MainClass::on_login_clicked()
     password = passHash(password);
 
     if(email.length() < 4 || email.length() > 254 || password.length() < 6){
-        ui->login->setEnabled(true);
-        ui->signup->setEnabled(true);
+        authGui(true);
         return;
     }
+    ui->loginBar->setMaximum(0);
     authGui(false);
     auth(email, password);
 }
@@ -559,7 +663,7 @@ void MainClass::on_logout_clicked()
     ui->accountEmail->clear();
     QSettings settings;
     settings.remove("auth");
-    qDebug() << "Logged out!";
+    if(GLOBAL::debugging) qDebug() << "Logged out!";
 }
 
 void MainClass::getSecureKey()
@@ -614,4 +718,46 @@ void MainClass::on_story3_clicked()
 void MainClass::on_update_clicked()
 {
     updateCheck();
+}
+
+void MainClass::on_pathButton_clicked()
+{
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::Directory);
+    dialog.setOption(QFileDialog::ShowDirsOnly);
+
+    QString directory;
+    directory = dialog.getExistingDirectory(this, "Выберите путь");
+    if(directory != "") ui->pathEdit->setText(directory);
+
+    QSettings settings;
+    settings.setValue("general/path", directory);
+    settings.sync();
+}
+
+void MainClass::on_l_1_toggled(bool checked)//Всегда
+{
+    if(!checked) return;
+    QSettings settings;
+    settings.setValue("general/save", 1);
+    settings.sync();
+    saveType = 1;
+}
+
+void MainClass::on_l_2_toggled(bool checked)//Когда оффлайн
+{
+    if(!checked) return;
+    QSettings settings;
+    settings.setValue("general/save", 2);
+    settings.sync();
+    saveType = 2;
+}
+
+void MainClass::on_l_3_toggled(bool checked)//Никогда
+{
+    if(!checked) return;
+    QSettings settings;
+    settings.setValue("general/save", 3);
+    settings.sync();
+    saveType = 3;
 }

@@ -7,26 +7,20 @@ if(!$core->isAuth()){echo '<script type="text/javascript">location.href="/login"
 <div class="accountWrap">
 	<a href="/" class="accountLogo">
 	</a>
-	<div class="shadowWrap">
+	<?php
+	$query = $mysqli->query("SELECT * FROM `screenshots` WHERE `userId` = '".$_SESSION['id']."'");
+	if($query){
+		$num = mysqli_num_rows($query);
+	}
+	?>
 		<div class="accountMenu">
-			<div class="left">
-				<a href="/">Главная</a>
-			</div>
 			<div class="acc-icon" onClick="changeSort()"><img src="/css/img/sort<?=$_COOKIE['sort']?>.png"></div>
 			<div class="right">
-				<a href="javascript://" onClick="openDetails();"><?=$_SESSION['email']?></a>
+				<a title="Скриншотов: <?=$num?>"><?=$_SESSION['email']?></a>
 				<a href="/logout.php">Выход</a>
 			</div>
 		</div>
-		<div class='accountDetails'>
-			<?php
-			$query = $mysqli->query("SELECT * FROM `screenshots` WHERE `userId` = '".$_SESSION['id']."'");
-			if($query){
-				$num = mysqli_num_rows($query);
-				echo '<span>Количество скриншотов: '.$num.'</span>';
-			}
-			?>
-		</div>
+	<div class="shadowWrap">
 		<div class="accountUploads">
 			<script type="text/javascript">moreItems(0);</script>
 		</div>
