@@ -19,6 +19,14 @@ switch($act){
 	case "update":
 		exit($version.'|'.$link);
 	break;
+	case "updateNotes":
+		$version = $_POST['version'];
+		
+		$query = $mysqli->query("SELECT * FROM `updates` WHERE `version` = '$version'");
+		$res = mysqli_fetch_array($query);
+		if(empty($res['id']) || !$query) die('error | hidden');
+		exit($res['notes'].'|'.$res['date']);
+	break;
 	case "getAuthKey":
 		$email = $_POST['email'];
 		$password = $_POST['password'];

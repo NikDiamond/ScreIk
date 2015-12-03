@@ -12,6 +12,9 @@ class GLOBAL : public QObject
 public:
     explicit GLOBAL(QObject *parent = 0);
     static int quality;
+    static int localQuality;
+    static bool useBufferPix;
+
     static bool authorized;
     static QString domain;
     static QString userAgent;

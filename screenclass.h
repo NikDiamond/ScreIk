@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QScreen>
 #include <QPixmap>
+#include <QPixmapCache>
 #include <QApplication>
 #include <QDir>
 #include <QFile>
@@ -29,21 +30,31 @@ class ScreenClass : public QObject
 public:
     explicit ScreenClass(QObject *parent = 0);
     void doScreen(QString email, QString pass, int x = 0, int y = 0, int w = -1, int h = -1, QString path="", int saveType=2);
+    void uploadScreen(QString ext);
     ~ScreenClass();
-private slots:
-    void uploadProgress(qint64 bytes,qint64 total);
-    void uploadFinished(QNetworkReply *reply);
-private:
-    QNetworkAccessManager manager;
-    QNetworkReply *reply;
-    QPixmap mainPix;
-    QString date();
-    bool isError(QString message);
-    int _status;
 signals:
     void progress(qint64, qint64);
     void finished(QString, QString);
-    void finished(QPixmap);
+    void finished(bool);
+private slots:
+    void uploadProgress(qint64 bytes,qint64 total);
+    void uploadFinished(QNetworkReply *rep);
+private:
+    QString date();
+    bool isError(QString message);
+    void deleteTemp();
+
+    QNetworkAccessManager manager;
+    QNetworkReply *reply;
+
+    QPixmap *_mainPix;
+    QString _email;
+    QString _pass;
+    QString _path;
+    QString _localPath;
+    QString _tempPath;
+    int _saveType;
+    int _status;
 };
 
 #endif // SCREENCLASS_H

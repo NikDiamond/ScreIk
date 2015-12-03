@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>314</width>
-    <height>313</height>
+    <height>316</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -83,6 +83,18 @@ QLineEdit{
 	background: transparent;
 	border: 2px solid #fff;
 	padding: 2px;
+}
+QSlider::groove:horizontal {
+	background: #ffffff;
+    height: 3px;
+}
+
+QSlider::handle:horizontal {
+	border: 2px solid #ffffff;
+	background: #ffffff;
+	border-radius: 6px;
+    width: 10px;
+	margin: -6px 0;
 }</string>
   </property>
   <widget class="QWidget" name="centralWidget">
@@ -135,7 +147,7 @@ QTabWidget::pane {
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <property name="elideMode">
      <enum>Qt::ElideNone</enum>
@@ -156,7 +168,7 @@ QTabWidget::pane {
         <x>-1</x>
         <y>-1</y>
         <width>317</width>
-        <height>287</height>
+        <height>290</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -193,9 +205,9 @@ QTabWidget::pane {
          <item>
           <widget class="QGroupBox" name="groupBox">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+            <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
              <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
+             <verstretch>7</verstretch>
             </sizepolicy>
            </property>
            <property name="title">
@@ -238,21 +250,21 @@ QTabWidget::pane {
          <item>
           <widget class="QGroupBox" name="groupBox_2">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+            <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
              <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
+             <verstretch>9</verstretch>
             </sizepolicy>
            </property>
            <property name="title">
-            <string>Сохрянять на диске: (TODO)</string>
+            <string>Сохрянять на диске:</string>
            </property>
            <widget class="QWidget" name="verticalLayoutWidget_9">
             <property name="geometry">
              <rect>
               <x>0</x>
               <y>20</y>
-              <width>238</width>
-              <height>80</height>
+              <width>151</width>
+              <height>104</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -262,7 +274,7 @@ QTabWidget::pane {
              <item>
               <widget class="QRadioButton" name="l_1">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="text">
                 <string>Всегда</string>
@@ -272,7 +284,7 @@ QTabWidget::pane {
              <item>
               <widget class="QRadioButton" name="l_2">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="text">
                 <string>Когда оффлайн</string>
@@ -285,14 +297,73 @@ QTabWidget::pane {
              <item>
               <widget class="QRadioButton" name="l_3">
                <property name="enabled">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="text">
                 <string>Никогда</string>
                </property>
               </widget>
              </item>
+             <item>
+              <widget class="QRadioButton" name="l_4">
+               <property name="text">
+                <string>Не загружать на сервер</string>
+               </property>
+              </widget>
+             </item>
             </layout>
+           </widget>
+           <widget class="QSlider" name="locQual_slid">
+            <property name="geometry">
+             <rect>
+              <x>158</x>
+              <y>50</y>
+              <width>132</width>
+              <height>20</height>
+             </rect>
+            </property>
+            <property name="minimum">
+             <number>1</number>
+            </property>
+            <property name="maximum">
+             <number>100</number>
+            </property>
+            <property name="pageStep">
+             <number>5</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+           <widget class="QLabel" name="locQual_lab">
+            <property name="geometry">
+             <rect>
+              <x>150</x>
+              <y>16</y>
+              <width>151</width>
+              <height>33</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Качество
+(влияет на размер файла): </string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+           <widget class="QPushButton" name="locQual_res">
+            <property name="geometry">
+             <rect>
+              <x>160</x>
+              <y>75</y>
+              <width>129</width>
+              <height>25</height>
+             </rect>
+            </property>
+            <property name="text">
+             <string>Сбросить</string>
+            </property>
            </widget>
           </widget>
          </item>
@@ -313,12 +384,16 @@ QTabWidget::pane {
            <item>
             <widget class="QLabel" name="label">
              <property name="text">
-              <string>Схорянять в: </string>
+              <string>Сохранять в: </string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLineEdit" name="pathEdit"/>
+            <widget class="QLineEdit" name="pathEdit">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QPushButton" name="pathButton">
@@ -540,8 +615,6 @@ QTabWidget::pane {
            </item>
           </layout>
          </widget>
-         <zorder>verticalLayoutWidget_2</zorder>
-         <zorder>accountGroup</zorder>
         </widget>
        </item>
        <item>
@@ -657,9 +730,6 @@ QTabWidget::pane {
            </item>
           </layout>
          </widget>
-         <zorder>verticalLayoutWidget_4</zorder>
-         <zorder>authGroup</zorder>
-         <zorder>authGroup</zorder>
         </widget>
        </item>
       </layout>
@@ -686,11 +756,6 @@ QTabWidget::pane {
        <bool>false</bool>
       </property>
      </widget>
-     <zorder>verticalLayoutWidget_3</zorder>
-     <zorder>accountGroup</zorder>
-     <zorder>accountGroup</zorder>
-     <zorder>accountGroup</zorder>
-     <zorder>loginBar</zorder>
     </widget>
     <widget class="QWidget" name="hotkeysTab">
      <attribute name="title">

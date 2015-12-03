@@ -93,6 +93,18 @@ void MainClass::uiSetup()
 void MainClass::getRegistrySettings()
 {
     QSettings settings;
+    //version
+    if(settings.value("version", "").toString() == "" && settings.value("auth/email", "").toString() != ""){
+        settings.setValue("version", "0");
+        settings.sync();
+    }
+
+    QString version = settings.value("version", GLOBAL::version).toString();
+    if(version != GLOBAL::version)//just updated
+        showUpdateNotes();
+    settings.setValue("version", GLOBAL::version);
+    settings.sync();
+    //
     if(settings.value("general/autorun", true).toBool())
         setRegRun(true);
     ui->autorunBox->setChecked(settings.value("general/autorun", true).toBool());
@@ -111,7 +123,13 @@ void MainClass::getRegistrySettings()
     case 3:
         ui->l_3->setChecked(true);
         break;
+    case 4:
+        ui->l_4->setChecked(true);
+        break;
     }
+    //local quality
+    ui->locQual_slid->setValue(settings.value("general/local_quality", GLOBAL::quality).toInt());
+    GLOBAL::localQuality = settings.value("general/local_quality", GLOBAL::quality).toInt();
     //hotkeys
     RegisterHotKey((HWND)winId(), 0, settings.value("hotkeys/fullscreen_mod", 0).toUInt(), settings.value("hotkeys/fullscreen_key", VK_SNAPSHOT).toUInt());//full
     ui->keyhook_full->setText(modString(settings.value("hotkeys/fullscreen_mod", 0).toUInt()) + settings.value("hotkeys/fullscreen_text", "Print").toString());
@@ -492,48 +510,71 @@ void MainClass::trayActivate(QSystemTrayIcon::ActivationReason r)
 
 void MainClass::screen(int x, int y, int w, int h)
 {
+    setIconImage(":/icons/icon-wait.ico");
+
     ScreenClass *screener = new ScreenClass(this);
 
-    setIconImage(":/icons/icon-wait.ico");
-    screener->doScreen(_email, _password, x, y, w, h, ui->pathEdit->text(), saveType);
-
     connect(screener, SIGNAL(progress(qint64,qint64)), this, SLOT(uploadProgress(qint64,qint64)));
+    connect(screener, SIGNAL(finished(bool)), this, SLOT(uploadFinished(bool)));
     connect(screener, SIGNAL(finished(QString, QString)), this, SLOT(uploadFinished(QString, QString)));
-    connect(screener, SIGNAL(finished(QPixmap)), this, SLOT(uploadFinished(QPixmap)));
+
+    screener->doScreen(_email, _password, x, y, w, h, ui->pathEdit->text(), saveType);
+}
+
+void MainClass::uploadFinished(bool alert)
+{
+    doneSound();
+    if(!alert) return;
+
+    //show info
+    QString mes;
+    if(!GLOBAL::authorized)
+        mes = "Вы не авторизованы.";
+    else
+        mes = "Ошибка подключения к серверу.";
+
+    mes += "\nСкриншот сохранён в буфер обмена";
+    if(saveType == 2) mes += " и на диск."; else mes+=".";
+    trayIcon->showMessage("ScreIk", mes, QSystemTrayIcon::Information, 600);
+}
+
+void MainClass::uploadFinished(QString link, QString date)//finished uploading screen
+{
+    lastLink = link;
+    doneSound();
+
+    //updating storyList
+    if(storyList["names"].length()<3){
+        storyList["names"].insert(storyList["names"].length(), "");
+        storyList["dates"].insert(storyList["names"].length(), "");
+        historyLength++;
+    }
+    for(int i = storyList["names"].length()-1; i>0; i--){
+        storyList["names"][i] = storyList["names"][i-1];
+        storyList["dates"][i] = storyList["dates"][i-1];
+    }
+    storyList["names"][0] = link;
+    storyList["dates"][0] = date;
+    storyUpdate();
 }
 
 void MainClass::screenArea()
 {
-    if(!GLOBAL::authorized){
-        if(!this->isVisible())
-            this->show();
-        ui->tabWidget->setCurrentIndex(1);
-        this->setFocus();
-    }else{
-        //area screen
-        if(!areaBusy){
-            if(GLOBAL::debugging) qDebug() << "area";
-            areaBusy = true;
-            areaScreener = new AreaScreen();
-            connect(areaScreener, SIGNAL(completed(int,int,int,int)), this, SLOT(areaGot(int,int,int,int)));
-            connect(areaScreener, SIGNAL(broken()), this, SLOT(areaBroken()));
-        }
+    if(!areaBusy){
+        if(GLOBAL::debugging) qDebug() << "area";
+        areaBusy = true;
+        areaScreener = new AreaScreen();
+        connect(areaScreener, SIGNAL(completed(int,int,int,int)), this, SLOT(areaGot(int,int,int,int)));
+        connect(areaScreener, SIGNAL(broken()), this, SLOT(areaBroken()));
     }
 }
 
 void MainClass::screenWnd()
 {
-    if(!GLOBAL::authorized){
-        if(!this->isVisible())
-            this->show();
-        ui->tabWidget->setCurrentIndex(1);
-        this->setFocus();
-    }else{
-        //window screen
-        RECT pt;
-        GetWindowRect(GetForegroundWindow(),&pt);
-        screen(pt.left, pt.top, pt.right-pt.left, pt.bottom-pt.top);
-    }
+    //window screen
+    RECT pt;
+    GetWindowRect(GetForegroundWindow(),&pt);
+    screen(pt.left, pt.top, pt.right-pt.left, pt.bottom-pt.top);
 }
 
 void MainClass::areaGot(int x, int y, int w, int h)
@@ -586,45 +627,25 @@ void MainClass::uploadProgress(qint64 bytes, qint64 total)
     }
 }
 
-void MainClass::uploadFinished(QString link, QString date)//finished uploading screen
-{
-    lastLink = link;
-    setIconImage(":/icons/icon.ico");
-    connect(trayIcon, SIGNAL(messageClicked()), this, SLOT(openScreen()));
-    QSound::play(":/snd/sound/complete.wav");
 
-    //updating storyList
-    if(storyList["names"].length()<3){
-        storyList["names"].insert(storyList["names"].length(), "");
-        storyList["dates"].insert(storyList["names"].length(), "");
-        historyLength++;
-    }
-    for(int i = storyList["names"].length()-1; i>0; i--){
-        storyList["names"][i] = storyList["names"][i-1];
-        storyList["dates"][i] = storyList["dates"][i-1];
-    }
-    storyList["names"][0] = link;
-    storyList["dates"][0] = date;
-    storyUpdate();
+void MainClass::doneSound()
+{
+    setIconImage(":/icons/icon.ico");
+    QSound::play(":/snd/sound/complete.wav");
 }
 
-void MainClass::uploadFinished(QPixmap pix)//finished local screen
+void MainClass::showUpdateNotes()
 {
-    //save screenshot
-    QClipboard *clip = QApplication::clipboard();
-    clip->setPixmap(pix);
-    //show info
-    if(GLOBAL::debugging) qDebug() << "Local screen in clipboard";
-    QString mes;
-    if(!GLOBAL::authorized)
-        mes = "Вы не авторизованы.";
-    else
-        mes = "Ошибка подключения к серверу.";
+    App *app = new App("updateNotes", "version="+GLOBAL::version);
+    app->query();
+    connect(app, SIGNAL(finished(QString)), this, SLOT(notesShow(QString)));
+}
 
-    mes += "\nСкриншот сохранён в буфер обмена";
-    trayIcon->showMessage("ScreIk", mes, QSystemTrayIcon::Information, 600);
-    QSound::play(":/snd/sound/complete.wav");
-    setIconImage(":/icons/icon.ico");
+void MainClass::notesShow(QString notes)
+{
+    QStringList nts = notes.split("|");
+    if(notes.simplified() != "")
+        warning("Обновление от "+nts[1]+" :\n\n"+nts[0]);
 }
 
 void MainClass::openScreen()
@@ -728,7 +749,13 @@ void MainClass::on_pathButton_clicked()
 
     QString directory;
     directory = dialog.getExistingDirectory(this, "Выберите путь");
-    if(directory != "") ui->pathEdit->setText(directory);
+    if(directory.simplified() != ""){
+        QFileInfo fi(directory);
+
+        if(fi.isDir() && fi.isWritable()){
+            ui->pathEdit->setText(directory);
+        }
+    }
 
     QSettings settings;
     settings.setValue("general/path", directory);
@@ -737,6 +764,8 @@ void MainClass::on_pathButton_clicked()
 
 void MainClass::on_l_1_toggled(bool checked)//Всегда
 {
+    locQualEnabled(true);
+
     if(!checked) return;
     QSettings settings;
     settings.setValue("general/save", 1);
@@ -746,6 +775,8 @@ void MainClass::on_l_1_toggled(bool checked)//Всегда
 
 void MainClass::on_l_2_toggled(bool checked)//Когда оффлайн
 {
+    locQualEnabled(true);
+
     if(!checked) return;
     QSettings settings;
     settings.setValue("general/save", 2);
@@ -755,9 +786,45 @@ void MainClass::on_l_2_toggled(bool checked)//Когда оффлайн
 
 void MainClass::on_l_3_toggled(bool checked)//Никогда
 {
+    locQualEnabled(false);
+
     if(!checked) return;
     QSettings settings;
     settings.setValue("general/save", 3);
     settings.sync();
     saveType = 3;
+}
+
+void MainClass::on_l_4_toggled(bool checked)
+{
+    locQualEnabled(true);
+
+    if(!checked) return;
+    QSettings settings;
+    settings.setValue("general/save", 4);
+    settings.sync();
+    saveType = 4;
+}
+
+void MainClass::locQualEnabled(bool state)
+{
+    ui->locQual_lab->setVisible(state);
+    ui->locQual_slid->setVisible(state);
+    ui->locQual_res->setVisible(state);
+}
+
+void MainClass::on_locQual_slid_sliderMoved(int position)
+{
+    GLOBAL::localQuality = position;
+    QSettings settings;
+    settings.setValue("general/local_quality", position);
+    settings.sync();
+}
+
+void MainClass::on_locQual_res_clicked()
+{
+    GLOBAL::localQuality = GLOBAL::quality;
+    ui->locQual_slid->setValue(GLOBAL::quality);
+    QSettings settings;
+    settings.remove("general/local_quality");
 }

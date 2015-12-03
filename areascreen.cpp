@@ -6,7 +6,7 @@ AreaScreen::AreaScreen(QWidget *parent) :
     this->setWindowFlags(windowFlags() | Qt::Tool);
     this->setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
     this->setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
-    this->setWindowOpacity(.2);
+    this->setWindowOpacity(.15);
 
     RegisterHotKey((HWND)this->winId(), 0, 0, static_cast<int>(VK_ESCAPE));
     hooker = AreaHook::instance();
@@ -44,11 +44,11 @@ void AreaScreen::paintEvent(QPaintEvent *event)
     event->accept();
     QPainter p(this);
     QPen pen;
-    pen.setWidth(2);
+    pen.setWidth(1);
 
     p.setPen(pen);
     p.setBackground(QBrush(QColor(0,0,0),Qt::SolidPattern));
-    p.drawRect(1, 1, this->width()-2, this->height()-2);
+    p.drawRect(0, 0, this->width()-1, this->height()-1);
 }
 
 void AreaScreen::hookEvent(bool pr, QPoint pt)

@@ -65,8 +65,10 @@ private slots:
     void screenWnd();
 
     void uploadProgress(qint64 bytes, qint64 total);
+
     void uploadFinished(QString link, QString date);
-    void uploadFinished(QPixmap pix);
+    void uploadFinished(bool alert);
+
     void authCheck();
     void toAuth();
     void getSecureKey();
@@ -87,6 +89,7 @@ private slots:
     void deleteScreen(QString name);
     void screenDeleted();
     void openScreen(QString name);
+    void notesShow(QString notes);
 
     void on_signup_clicked();
     void on_login_clicked();
@@ -103,11 +106,20 @@ private slots:
     void on_l_2_toggled(bool checked);
     void on_l_3_toggled(bool checked);
 
+    void on_locQual_slid_sliderMoved(int position);
+
+    void on_locQual_res_clicked();
+
+    void on_l_4_toggled(bool checked);
+
 public slots:
     static void warning(QString message);
 private:
     void uiSetup();
     void getRegistrySettings();
+    void locQualEnabled(bool state);
+    void doneSound();
+    void showUpdateNotes();
 
     Ui::MainClass *ui;
     QSystemTrayIcon *trayIcon;
